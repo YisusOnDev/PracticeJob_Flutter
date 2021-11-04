@@ -1,7 +1,9 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:myownapp/src/pages/home_page.dart';
 import 'package:myownapp/src/pages/signup_page.dart';
-
+import 'package:myownapp/src/services/auth_service.dart';
 import '../widgets/bezier_container.dart';
 
 class LoginPage extends StatefulWidget {
@@ -16,6 +18,10 @@ class LoginPage extends StatefulWidget {
 }
 
 class _LoginPageState extends State<LoginPage> {
+  final AuthService _auth = AuthService();
+  String _email = "";
+  String _password = "";
+
   Widget _backButton() {
     return InkWell(
       onTap: () {
@@ -37,7 +43,7 @@ class _LoginPageState extends State<LoginPage> {
     );
   }
 
-  Widget _entryField(String title, {bool isPassword = false}) {
+  Widget _entryField(String title, String type, {bool isPassword = false}) {
     return Container(
       margin: const EdgeInsets.symmetric(vertical: 10),
       child: Column(
@@ -51,20 +57,42 @@ class _LoginPageState extends State<LoginPage> {
             height: 10,
           ),
           TextField(
-              obscureText: isPassword,
-              decoration: const InputDecoration(
-                  border: InputBorder.none,
-                  fillColor: Color(0xfff3f3f4),
-                  filled: true))
+            obscureText: isPassword,
+            decoration: const InputDecoration(
+                border: InputBorder.none,
+                fillColor: Color(0xfff3f3f4),
+                filled: true),
+            onChanged: (value) {
+              switch (type) {
+                case "email":
+                  _email = value;
+                  break;
+                case "password":
+                  _password = value;
+                  break;
+                default:
+                  _email = "";
+                  _password = "";
+                  break;
+              }
+            },
+          )
         ],
       ),
     );
   }
 
-  Widget _submitButton() {
+  Widget _submitLoginButton() {
     return InkWell(
-        onTap: () {
-          Navigator.pushNamed(context, HomePage.pageName);
+        onTap: () async {
+          final res = await _auth.login(_email, _password);
+          final data = jsonDecode(res) as Map<String, dynamic>;
+          if (data['status'] != 200) {
+            print("FAIL");
+          } else {
+            print("OK");
+            Navigator.pushNamed(context, HomePage.pageName);
+          }
         },
         child: Container(
           width: MediaQuery.of(context).size.width,
@@ -138,8 +166,8 @@ class _LoginPageState extends State<LoginPage> {
   Widget _emailPasswordWidget() {
     return Column(
       children: <Widget>[
-        _entryField("Email id"),
-        _entryField("Password", isPassword: true),
+        _entryField("Email", "email", isPassword: false),
+        _entryField("Password", "password", isPassword: true),
       ],
     );
   }
@@ -168,7 +196,7 @@ class _LoginPageState extends State<LoginPage> {
                   const SizedBox(height: 50),
                   _emailPasswordWidget(),
                   const SizedBox(height: 20),
-                  _submitButton(),
+                  _submitLoginButton(),
                   Container(
                     padding: const EdgeInsets.symmetric(vertical: 10),
                     alignment: Alignment.centerRight,

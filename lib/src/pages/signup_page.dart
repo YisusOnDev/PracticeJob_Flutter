@@ -14,6 +14,10 @@ class SignUpPage extends StatefulWidget {
 }
 
 class _SignUpPageState extends State<SignUpPage> {
+  String _email = "";
+  String _password = "";
+  String _username = "";
+
   Widget _backButton() {
     return InkWell(
       onTap: () {
@@ -35,7 +39,7 @@ class _SignUpPageState extends State<SignUpPage> {
     );
   }
 
-  Widget _entryField(String title, {bool isPassword = false}) {
+  Widget _entryField(String title, String type, {bool isPassword = false}) {
     return Container(
       margin: const EdgeInsets.symmetric(vertical: 10),
       child: Column(
@@ -49,17 +53,36 @@ class _SignUpPageState extends State<SignUpPage> {
             height: 10,
           ),
           TextField(
-              obscureText: isPassword,
-              decoration: const InputDecoration(
-                  border: InputBorder.none,
-                  fillColor: Color(0xfff3f3f4),
-                  filled: true))
+            obscureText: isPassword,
+            decoration: const InputDecoration(
+                border: InputBorder.none,
+                fillColor: Color(0xfff3f3f4),
+                filled: true),
+            onChanged: (value) {
+              switch (type) {
+                case "email":
+                  _email = value;
+                  break;
+                case "password":
+                  _password = value;
+                  break;
+                case "username":
+                  _username = value;
+                  break;
+                default:
+                  _email = "";
+                  _password = "";
+                  _username = "";
+                  break;
+              }
+            },
+          )
         ],
       ),
     );
   }
 
-  Widget _submitButton() {
+  Widget _submitRegisterButton() {
     return Container(
       width: MediaQuery.of(context).size.width,
       padding: const EdgeInsets.symmetric(vertical: 15),
@@ -132,9 +155,9 @@ class _SignUpPageState extends State<SignUpPage> {
   Widget _emailPasswordWidget() {
     return Column(
       children: <Widget>[
-        _entryField("Username"),
-        _entryField("Email Address"),
-        _entryField("Password", isPassword: true),
+        _entryField("Username", "username"),
+        _entryField("Email Address", "email"),
+        _entryField("Password", "password", isPassword: true),
       ],
     );
   }
@@ -168,7 +191,7 @@ class _SignUpPageState extends State<SignUpPage> {
                     const SizedBox(
                       height: 20,
                     ),
-                    _submitButton(),
+                    _submitRegisterButton(),
                     _loginAccountLabel(),
                   ],
                 ),
