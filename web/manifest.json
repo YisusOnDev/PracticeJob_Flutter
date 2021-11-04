@@ -1,6 +1,6 @@
 {
-    "name": "myownapp",
-    "short_name": "myownapp",
+    "name": "practicejob",
+    "short_name": "practicejob",
     "start_url": ".",
     "display": "standalone",
     "background_color": "#0175C2",

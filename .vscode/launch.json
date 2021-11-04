@@ -5,12 +5,12 @@
     "version": "0.2.0",
     "configurations": [
         {
-            "name": "myownapp",
+            "name": "practicejob",
             "request": "launch",
             "type": "dart"
         },
         {
-            "name": "myownapp (profile mode)",
+            "name": "practicejob (profile mode)",
             "request": "launch",
             "type": "dart",
             "flutterMode": "profile"

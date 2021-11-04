@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:myownapp/src/utils/icon_utils.dart';
+import 'package:practicejob/src/utils/icon_utils.dart';
 
 import 'menu_provider.dart';
 

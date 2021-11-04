@@ -1,10 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:google_fonts/google_fonts.dart';
-import 'package:myownapp/src/pages/home_page.dart';
-import 'package:myownapp/src/pages/signup_page.dart';
-import 'package:myownapp/src/pages/welcome_page.dart';
-
-import 'src/pages/login_page.dart';
+import 'package:practicejob/constants.dart';
+import 'package:practicejob/src/pages/home_page.dart';
+import 'package:practicejob/src/pages/login_page.dart';
+import 'package:practicejob/src/pages/signup_page.dart';
+import 'package:practicejob/src/pages/welcome_page.dart';
 
 void main() {
   runApp(const MyApp());
@@ -15,14 +14,12 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final textTheme = Theme.of(context).textTheme;
     return MaterialApp(
-      title: 'Simple App',
+      debugShowCheckedModeBanner: false,
+      title: 'PracticeJob App',
       theme: ThemeData(
-        primarySwatch: Colors.blue,
-        textTheme: GoogleFonts.latoTextTheme(textTheme).copyWith(
-          bodyText1: GoogleFonts.montserrat(textStyle: textTheme.bodyText1),
-        ),
+        primaryColor: cPrimaryColor,
+        scaffoldBackgroundColor: Colors.white,
       ),
       initialRoute: '/',
       routes: _generateRoutes(context),

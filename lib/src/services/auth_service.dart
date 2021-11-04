@@ -1,9 +1,7 @@
-import 'dart:convert';
-
 import 'package:http/http.dart' as http;
 
 class AuthService {
-  final baseUrl = 'https://192.168.0.18:5001';
+  final baseUrl = 'http://192.168.0.18:5000';
   // ignore: non_constant_identifier_names
   // static final SESSION = FlutterSession();
 
@@ -29,9 +27,7 @@ class AuthService {
         },
       );
       return res.body;
-    } finally {
-      // you can do somethig here
-    }
+    } finally {}
   }
 
   /*static setToken(String token, String refreshToken) async {
