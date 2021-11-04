@@ -9,7 +9,7 @@ class BezierContainer extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
+    return SizedBox(
         child: Transform.rotate(
       angle: -pi / 3.5,
       child: ClipPath(

@@ -73,18 +73,21 @@ class _HomePageState extends State<HomePage> {
       children: <Widget>[
         const SizedBox(width: 30),
         FloatingActionButton(
+          heroTag: "incrementButton",
           onPressed: _incrementCounter,
           tooltip: 'Increment',
           child: const Icon(Icons.add),
         ),
         const Expanded(child: SizedBox()),
         FloatingActionButton(
+          heroTag: "resetButton",
           onPressed: _resetCounter,
           tooltip: 'Set 0',
           child: const Text("0"),
         ),
         const Expanded(child: SizedBox()),
         FloatingActionButton(
+          heroTag: "decrementButton",
           onPressed: _decrementCounter,
           tooltip: 'Decrement',
           child: const Icon(Icons.remove),

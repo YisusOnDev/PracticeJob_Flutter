@@ -1,25 +1,10 @@
 {
-    "name":"KEKW",
+    "name":"DrawerMenu",
     "routes":[
         {
             "route":"/",
             "icon":"house",
             "text":"Home"
-        },
-        {
-            "route":"counter",
-            "icon":"alarm",
-            "text":"Counter"
-        },
-        {
-            "route":"dialog",
-            "icon":"dialog",
-            "text":"Dialogs"
-        },
-        {
-            "route":"buttons",
-            "icon":"smart_button",
-            "text":"Buttons"
         }
     ]
 
