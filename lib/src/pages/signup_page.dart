@@ -1,16 +1,31 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:practicejob/constants.dart';
 import 'package:practicejob/src/components/rounded_input_field.dart';
 import 'package:practicejob/src/components/rounded_password_field.dart';
+import 'package:practicejob/src/models/user.dart';
+import 'package:practicejob/src/pages/home_page.dart';
 import 'package:practicejob/src/pages/login_page.dart';
+import 'package:practicejob/src/services/auth_service.dart';
 
-class SignUpPage extends StatelessWidget {
+class SignUpPage extends StatefulWidget {
   static var pageName = 'SignUp';
 
   const SignUpPage({Key? key, this.title}) : super(key: key);
 
   final String? title;
+
+  @override
+  _SignUpPageState createState() => _SignUpPageState();
+}
+
+class _SignUpPageState extends State<SignUpPage> {
+  final AuthService _auth = AuthService();
+  String _email = "";
+  String _username = "";
+  String _password = "";
 
   @override
   Widget build(BuildContext context) {
@@ -52,11 +67,21 @@ class SignUpPage extends StatelessWidget {
                     height: size.height * 0.35,
                   ),
                   RoundedInputField(
-                    hintText: "Your Email",
-                    onChanged: (value) {},
+                    hintText: "Username",
+                    onChanged: (value) {
+                      _username = value;
+                    },
+                  ),
+                  RoundedInputField(
+                    hintText: "Email",
+                    onChanged: (value) {
+                      _email = value;
+                    },
                   ),
                   RoundedPasswordField(
-                    onChanged: (value) {},
+                    onChanged: (value) {
+                      _password = value;
+                    },
                   ),
                   Container(
                     // sign up button with nice size
@@ -69,7 +94,16 @@ class SignUpPage extends StatelessWidget {
                       borderRadius: BorderRadius.circular(29),
                     ),
                     child: TextButton(
-                      onPressed: () => print("Service: signup ?"),
+                      onPressed: () async {
+                        final res = await _auth
+                            .register(User(null, _username, _email, _password));
+                        if (res.statusCode != 200) {
+                          print("FAIL");
+                        } else {
+                          print("OK");
+                          Navigator.pushNamed(context, HomePage.pageName);
+                        }
+                      },
                       style: TextButton.styleFrom(primary: Colors.white),
                       child: const Text("SIGN UP"),
                     ),

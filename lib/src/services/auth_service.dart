@@ -1,33 +1,36 @@
+import 'dart:convert';
+
 import 'package:http/http.dart' as http;
+import 'package:practicejob/src/models/user.dart';
 
 class AuthService {
-  final baseUrl = 'http://192.168.0.18:5000';
+  final baseUrl = 'http://10.0.2.2:5000';
   // ignore: non_constant_identifier_names
   // static final SESSION = FlutterSession();
 
-  Future<dynamic> register(String email, String password) async {
-    try {
-      var res = await http.post(Uri.parse('$baseUrl/api/User/Create'), body: {
-        'email': email,
-        'password': password,
-      });
-      return res.body;
-    } finally {
-      // done you can do something here
-    }
+  Future<http.Response> register(User u) {
+    return http.post(
+      Uri.parse('$baseUrl/api/User/Create'),
+      headers: <String, String>{
+        'Content-Type': 'application/json; charset=UTF-8',
+      },
+      body: jsonEncode(<String, String>{
+        'username': u.username.toString(),
+        'email': u.email,
+        'password': u.password
+      }),
+    );
   }
 
-  Future<dynamic> login(String email, String password) async {
-    try {
-      var res = await http.post(
-        Uri.parse('$baseUrl/api/User/Login'),
-        body: {
-          'email': email,
-          'password': password,
-        },
-      );
-      return res.body;
-    } finally {}
+  Future<http.Response> login(User u) {
+    return http.post(
+      Uri.parse('$baseUrl/api/User/Login'),
+      headers: <String, String>{
+        'Content-Type': 'application/json; charset=UTF-8',
+      },
+      body: jsonEncode(
+          <String, String>{'email': u.email, 'password': u.password}),
+    );
   }
 
   /*static setToken(String token, String refreshToken) async {

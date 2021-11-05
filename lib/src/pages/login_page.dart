@@ -4,6 +4,7 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:practicejob/constants.dart';
 import 'package:practicejob/src/components/rounded_input_field.dart';
 import 'package:practicejob/src/components/rounded_password_field.dart';
+import 'package:practicejob/src/models/user.dart';
 import 'package:practicejob/src/pages/home_page.dart';
 import 'package:practicejob/src/pages/signup_page.dart';
 import 'package:practicejob/src/services/auth_service.dart';
@@ -86,9 +87,9 @@ class _LoginPageState extends State<LoginPage> {
                   ),
                   child: TextButton(
                     onPressed: () async {
-                      final res = await _auth.login(_email, _password);
-                      final data = jsonDecode(res) as Map<String, dynamic>;
-                      if (data['status'] != 200) {
+                      final res = await _auth
+                          .login(User(null, null, _email, _password));
+                      if (res.statusCode != 200) {
                         print("FAIL");
                       } else {
                         print("OK");
