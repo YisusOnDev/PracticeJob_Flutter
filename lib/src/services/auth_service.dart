@@ -9,8 +9,9 @@ class AuthService {
   // static final SESSION = FlutterSession();
 
   Future<http.Response> register(User u) {
+    var url = Uri.parse('$baseUrl/api/User/Create');
     return http.post(
-      Uri.parse('$baseUrl/api/User/Create'),
+      url,
       headers: <String, String>{
         'Content-Type': 'application/json; charset=UTF-8',
       },
@@ -23,8 +24,9 @@ class AuthService {
   }
 
   Future<http.Response> login(User u) {
+    var url = Uri.parse('$baseUrl/api/User/Login');
     return http.post(
-      Uri.parse('$baseUrl/api/User/Login'),
+      url,
       headers: <String, String>{
         'Content-Type': 'application/json; charset=UTF-8',
       },
