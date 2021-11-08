@@ -1,11 +1,9 @@
-import 'dart:convert';
-
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:practicejob/constants.dart';
-import 'package:practicejob/src/components/rounded_input_field.dart';
-import 'package:practicejob/src/components/rounded_password_field.dart';
+import 'package:practicejob/src/components/text_field_container.dart';
 import 'package:practicejob/src/models/user.dart';
+import 'package:practicejob/src/models/util.dart';
 import 'package:practicejob/src/pages/home_page.dart';
 import 'package:practicejob/src/pages/login_page.dart';
 import 'package:practicejob/src/services/auth_service.dart';
@@ -24,8 +22,12 @@ class SignUpPage extends StatefulWidget {
 class _SignUpPageState extends State<SignUpPage> {
   final AuthService _auth = AuthService();
   String _email = "";
-  String _username = "";
   String _password = "";
+
+  final _pwdController = TextEditingController();
+  final _emailController = TextEditingController();
+  bool _pwdValidate = false;
+  bool _emailValidate = false;
 
   @override
   Widget build(BuildContext context) {
@@ -66,22 +68,44 @@ class _SignUpPageState extends State<SignUpPage> {
                     "assets/icons/signup.svg",
                     height: size.height * 0.35,
                   ),
-                  RoundedInputField(
-                    hintText: "Username",
-                    onChanged: (value) {
-                      _username = value;
-                    },
+                  TextFieldContainer(
+                    child: TextField(
+                      onChanged: (value) {
+                        _email = value;
+                      },
+                      cursorColor: cPrimaryColor,
+                      controller: _emailController,
+                      decoration: InputDecoration(
+                        hintText: "Email",
+                        errorText:
+                            _emailValidate ? 'Email can\'t be empty' : null,
+                        icon: const Icon(
+                          Icons.person,
+                          color: cPrimaryColor,
+                        ),
+                        border: InputBorder.none,
+                      ),
+                    ),
                   ),
-                  RoundedInputField(
-                    hintText: "Email",
-                    onChanged: (value) {
-                      _email = value;
-                    },
-                  ),
-                  RoundedPasswordField(
-                    onChanged: (value) {
-                      _password = value;
-                    },
+                  TextFieldContainer(
+                    child: TextField(
+                      obscureText: true,
+                      onChanged: (value) {
+                        _password = value;
+                      },
+                      cursorColor: cPrimaryColor,
+                      controller: _pwdController,
+                      decoration: InputDecoration(
+                        hintText: "Password",
+                        errorText:
+                            _pwdValidate ? 'Password can\'t be empty' : null,
+                        icon: const Icon(
+                          Icons.lock,
+                          color: cPrimaryColor,
+                        ),
+                        border: InputBorder.none,
+                      ),
+                    ),
                   ),
                   Container(
                     // sign up button with nice size
@@ -95,13 +119,24 @@ class _SignUpPageState extends State<SignUpPage> {
                     ),
                     child: TextButton(
                       onPressed: () async {
-                        final res = await _auth
-                            .register(User(null, _username, _email, _password));
-                        if (res.statusCode != 200) {
-                          print("FAIL");
-                        } else {
-                          print("OK");
-                          Navigator.pushNamed(context, HomePage.pageName);
+                        setState(() {
+                          _pwdController.text.isEmpty
+                              ? _pwdValidate = true
+                              : _pwdValidate = false;
+                          _emailController.text.isEmpty
+                              ? _emailValidate = true
+                              : _emailValidate = false;
+                        });
+
+                        if (!_pwdValidate && !_emailValidate) {
+                          final res = await _auth
+                              .register(User(null, _email, _password));
+                          if (res.statusCode == 200) {
+                            Navigator.pushNamed(context, HomePage.pageName);
+                          } else {
+                            Util.showMyDialog(context, "Error",
+                                "An error has occurred. Please try again");
+                          }
                         }
                       },
                       style: TextButton.styleFrom(primary: Colors.white),

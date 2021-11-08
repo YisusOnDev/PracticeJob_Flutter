@@ -15,11 +15,8 @@ class AuthService {
       headers: <String, String>{
         'Content-Type': 'application/json; charset=UTF-8',
       },
-      body: jsonEncode(<String, String>{
-        'username': u.username.toString(),
-        'email': u.email,
-        'password': u.password
-      }),
+      body: jsonEncode(
+          <String, String>{'email': u.email, 'password': u.password}),
     );
   }
 
