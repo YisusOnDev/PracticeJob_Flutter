@@ -134,13 +134,18 @@ class _LoginPageState extends State<LoginPage> {
                       });
 
                       if (!_pwdValidate && !_emailValidate) {
-                        final res =
-                            await _auth.login(User(null, _email, _password));
-                        if (res.statusCode == 200) {
-                          Navigator.pushNamed(context, HomePage.pageName);
+                        if (Util.hasEmailFormat(_email)) {
+                          final res =
+                              await _auth.login(User(null, _email, _password));
+                          if (res.statusCode == 200) {
+                            Navigator.pushNamed(context, HomePage.pageName);
+                          } else {
+                            Util.showMyDialog(
+                                context, "Error", "Invalid credentials.");
+                          }
                         } else {
                           Util.showMyDialog(
-                              context, "Error", "Invalid credentials.");
+                              context, "Error", "Please insert a valid email.");
                         }
                       }
                     },

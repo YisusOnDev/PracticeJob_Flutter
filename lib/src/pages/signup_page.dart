@@ -23,8 +23,10 @@ class _SignUpPageState extends State<SignUpPage> {
   final AuthService _auth = AuthService();
   String _email = "";
   String _password = "";
+  String _passwordConfirm = "";
 
   final _pwdController = TextEditingController();
+  final _pwdConfirmController = TextEditingController();
   final _emailController = TextEditingController();
   bool _pwdValidate = false;
   bool _emailValidate = false;
@@ -107,6 +109,27 @@ class _SignUpPageState extends State<SignUpPage> {
                       ),
                     ),
                   ),
+                  TextFieldContainer(
+                    child: TextField(
+                      obscureText: true,
+                      onChanged: (value) {
+                        _passwordConfirm = value;
+                      },
+                      cursorColor: cPrimaryColor,
+                      controller: _pwdConfirmController,
+                      decoration: InputDecoration(
+                        hintText: "Password confirmation",
+                        errorText: _pwdValidate
+                            ? 'Password confirmation can\'t be empty'
+                            : null,
+                        icon: const Icon(
+                          Icons.lock,
+                          color: cPrimaryColor,
+                        ),
+                        border: InputBorder.none,
+                      ),
+                    ),
+                  ),
                   Container(
                     // sign up button with nice size
                     margin: const EdgeInsets.symmetric(vertical: 10),
@@ -129,13 +152,23 @@ class _SignUpPageState extends State<SignUpPage> {
                         });
 
                         if (!_pwdValidate && !_emailValidate) {
-                          final res = await _auth
-                              .register(User(null, _email, _password));
-                          if (res.statusCode == 200) {
-                            Navigator.pushNamed(context, HomePage.pageName);
+                          if (Util.hasEmailFormat(_email)) {
+                            if (_password == _passwordConfirm) {
+                              final res = await _auth
+                                  .register(User(null, _email, _password));
+                              if (res.statusCode == 200) {
+                                Navigator.pushNamed(context, HomePage.pageName);
+                              } else {
+                                Util.showMyDialog(context, "Error",
+                                    "An error has occurred. Please try again");
+                              }
+                            } else {
+                              Util.showMyDialog(context, "Error",
+                                  "Passwords must be the same.");
+                            }
                           } else {
                             Util.showMyDialog(context, "Error",
-                                "An error has occurred. Please try again");
+                                "Please insert a valid email.");
                           }
                         }
                       },

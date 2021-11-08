@@ -28,5 +28,9 @@ class Util {
     );
   }
 
-  static void _showMyDialog(BuildContext context, String s, String t) {}
+  static bool hasEmailFormat(email) {
+    return RegExp(
+            r"^[a-zA-Z0-9.a-zA-Z0-9.!#$%&'*+-/=?^_`{|}~]+@[a-zA-Z0-9]+\.[a-zA-Z]+")
+        .hasMatch(email);
+  }
 }
