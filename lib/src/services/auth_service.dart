@@ -9,27 +9,34 @@ class AuthService {
   // static final SESSION = FlutterSession();
 
   Future<http.Response> register(User u) {
-    var url = Uri.parse('$baseUrl/api/User/Create');
-    return http.post(
-      url,
-      headers: <String, String>{
-        'Content-Type': 'application/json; charset=UTF-8',
-      },
-      body: jsonEncode(
-          <String, String>{'email': u.email, 'password': u.password}),
-    );
+    var url = Uri.parse('$baseUrl/api/Auth/Create');
+    return http
+        .post(
+          url,
+          headers: <String, String>{
+            'Content-Type': 'application/json; charset=UTF-8',
+          },
+          body: jsonEncode(
+              <String, String>{'email': u.email, 'password': u.password}),
+        )
+        .timeout(const Duration(seconds: 30));
   }
 
   Future<http.Response> login(User u) {
-    var url = Uri.parse('$baseUrl/api/User/Login');
-    return http.post(
-      url,
-      headers: <String, String>{
-        'Content-Type': 'application/json; charset=UTF-8',
-      },
-      body: jsonEncode(
-          <String, String>{'email': u.email, 'password': u.password}),
-    );
+    var url = Uri.parse('$baseUrl/api/Auth/Login');
+    return http
+        .post(
+          url,
+          headers: <String, String>{
+            'Content-Type': 'application/json; charset=UTF-8',
+          },
+          body: jsonEncode(<String, String>{
+            'email': u.email,
+            'password': u.password,
+            'loginType': 'Student'
+          }),
+        )
+        .timeout(const Duration(seconds: 30));
   }
 
   /*static setToken(String token, String refreshToken) async {

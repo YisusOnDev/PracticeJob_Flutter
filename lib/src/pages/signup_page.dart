@@ -1,10 +1,12 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:practicejob/constants.dart';
 import 'package:practicejob/src/components/text_field_container.dart';
 import 'package:practicejob/src/models/user.dart';
 import 'package:practicejob/src/models/util.dart';
-import 'package:practicejob/src/pages/home_page.dart';
+import 'package:practicejob/src/pages/complete_profile_page.dart';
 import 'package:practicejob/src/pages/login_page.dart';
 import 'package:practicejob/src/services/auth_service.dart';
 
@@ -62,7 +64,7 @@ class _SignUpPageState extends State<SignUpPage> {
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: <Widget>[
                   const Text(
-                    "SIGNUP",
+                    "REGISTRO",
                     style: TextStyle(fontWeight: FontWeight.bold),
                   ),
                   SizedBox(height: size.height * 0.03),
@@ -98,7 +100,7 @@ class _SignUpPageState extends State<SignUpPage> {
                       cursorColor: cPrimaryColor,
                       controller: _pwdController,
                       decoration: InputDecoration(
-                        hintText: "Password",
+                        hintText: "Contraseña",
                         errorText:
                             _pwdValidate ? 'Password can\'t be empty' : null,
                         icon: const Icon(
@@ -118,7 +120,7 @@ class _SignUpPageState extends State<SignUpPage> {
                       cursorColor: cPrimaryColor,
                       controller: _pwdConfirmController,
                       decoration: InputDecoration(
-                        hintText: "Password confirmation",
+                        hintText: "Confirmación de contraseña",
                         errorText: _pwdValidate
                             ? 'Password confirmation can\'t be empty'
                             : null,
@@ -131,7 +133,6 @@ class _SignUpPageState extends State<SignUpPage> {
                     ),
                   ),
                   Container(
-                    // sign up button with nice size
                     margin: const EdgeInsets.symmetric(vertical: 10),
                     padding:
                         const EdgeInsets.symmetric(horizontal: 20, vertical: 5),
@@ -154,13 +155,19 @@ class _SignUpPageState extends State<SignUpPage> {
                         if (!_pwdValidate && !_emailValidate) {
                           if (Util.hasEmailFormat(_email)) {
                             if (_password == _passwordConfirm) {
-                              final res = await _auth
-                                  .register(User(null, _email, _password));
-                              if (res.statusCode == 200) {
-                                Navigator.pushNamed(context, HomePage.pageName);
-                              } else {
-                                Util.showMyDialog(context, "Error",
-                                    "An error has occurred. Please try again");
+                              try {
+                                final res = await _auth
+                                    .register(User(null, _email, _password));
+                                if (res.statusCode == 200) {
+                                  Navigator.pushNamed(
+                                      context, CompleteProfilePage.pageName);
+                                } else {
+                                  Util.showMyDialog(context, "Error",
+                                      "An error has occurred. Please try again");
+                                }
+                              } on TimeoutException {
+                                Navigator.pushNamed(
+                                    context, CompleteProfilePage.pageName);
                               }
                             } else {
                               Util.showMyDialog(context, "Error",
@@ -173,14 +180,14 @@ class _SignUpPageState extends State<SignUpPage> {
                         }
                       },
                       style: TextButton.styleFrom(primary: Colors.white),
-                      child: const Text("SIGN UP"),
+                      child: const Text("REGISTRARSE"),
                     ),
                   ),
                   TextButton(
                       onPressed: () =>
                           Navigator.pushNamed(context, LoginPage.pageName),
                       style: TextButton.styleFrom(primary: cPrimaryColor),
-                      child: const Text("Already have an account?")),
+                      child: const Text("¿Ya tienes cuenta?")),
                 ],
               ),
             ),

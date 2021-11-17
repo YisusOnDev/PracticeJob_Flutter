@@ -64,7 +64,7 @@ class _LoginPageState extends State<LoginPage> {
               mainAxisAlignment: MainAxisAlignment.center,
               children: <Widget>[
                 const Text(
-                  "LOGIN",
+                  "INICIO DE SESIÓN",
                   style: TextStyle(fontWeight: FontWeight.bold),
                 ),
                 SizedBox(height: size.height * 0.03),
@@ -101,7 +101,7 @@ class _LoginPageState extends State<LoginPage> {
                     cursorColor: cPrimaryColor,
                     controller: _pwdController,
                     decoration: InputDecoration(
-                      hintText: "Password",
+                      hintText: "Contraseña",
                       errorText:
                           _pwdValidate ? 'Password can\'t be empty' : null,
                       icon: const Icon(
@@ -113,7 +113,6 @@ class _LoginPageState extends State<LoginPage> {
                   ),
                 ),
                 Container(
-                  // sign up button with nice size
                   margin: const EdgeInsets.symmetric(vertical: 10),
                   padding:
                       const EdgeInsets.symmetric(horizontal: 20, vertical: 5),
@@ -150,14 +149,14 @@ class _LoginPageState extends State<LoginPage> {
                       }
                     },
                     style: TextButton.styleFrom(primary: Colors.white),
-                    child: const Text("LOGIN"),
+                    child: const Text("INICIAR SESIÓN"),
                   ),
                 ),
                 TextButton(
                     onPressed: () =>
                         Navigator.pushNamed(context, SignUpPage.pageName),
                     style: TextButton.styleFrom(primary: cPrimaryColor),
-                    child: const Text("Don’t have an Account?")),
+                    child: const Text("¿No tienes cuenta aún?")),
               ],
             ),
           ),

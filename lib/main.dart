@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:practicejob/constants.dart';
+import 'package:practicejob/src/pages/complete_profile_page.dart';
 import 'package:practicejob/src/pages/home_page.dart';
 import 'package:practicejob/src/pages/login_page.dart';
 import 'package:practicejob/src/pages/signup_page.dart';
@@ -34,7 +35,8 @@ class MyApp extends StatelessWidget {
       '/': (context) => const WelcomePage(),
       LoginPage.pageName: (context) => const LoginPage(),
       SignUpPage.pageName: (context) => const SignUpPage(),
-      HomePage.pageName: (context) => const HomePage()
+      HomePage.pageName: (context) => const HomePage(),
+      CompleteProfilePage.pageName: (context) => const CompleteProfilePage()
     };
   }
 }
