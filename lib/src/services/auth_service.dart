@@ -24,6 +24,11 @@ class AuthService {
 
   Future<http.Response> login(User u) {
     var url = Uri.parse('$baseUrl/api/Auth/Login');
+    print(jsonEncode(<String, String>{
+      'email': u.email,
+      'password': u.password,
+      'loginType': 'Student'
+    }));
     return http
         .post(
           url,
