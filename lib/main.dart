@@ -19,9 +19,10 @@ class MyApp extends StatelessWidget {
       debugShowCheckedModeBanner: false,
       title: 'PracticeJob App',
       theme: ThemeData(
-        primaryColor: cPrimaryColor,
-        scaffoldBackgroundColor: Colors.white,
-      ),
+          brightness: Brightness.light,
+          primaryColor: cPrimaryColor,
+          scaffoldBackgroundColor: Colors.white,
+          fontFamily: 'Nunito'),
       initialRoute: '/',
       routes: _generateRoutes(context),
       onGenerateRoute: (settings) {

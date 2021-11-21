@@ -32,6 +32,8 @@ dependencies:
   http: 0.13.4
   flutter_svg: ^0.23.0+1
   json_annotation: ^4.3.0
+  flutter_secure_storage: 5.0.2
+  reactive_forms: 10.6.4
 
 
   # The following adds the Cupertino Icons font to your application.
@@ -68,6 +70,23 @@ flutter:
   # included with your application, so that you can use the icons in
   # the material Icons class.
   uses-material-design: true
+  fonts:
+    - family: Nunito     
+      fonts:
+        - asset: assets/fonts/Nunito-Black.ttf
+        - asset: assets/fonts/Nunito-BlackItalic.ttf
+        - asset: assets/fonts/Nunito-Bold.ttf
+        - asset: assets/fonts/Nunito-BoldItalic.ttf
+        - asset: assets/fonts/Nunito-ExtraBold.ttf
+        - asset: assets/fonts/Nunito-ExtraBoldItalic.ttf
+        - asset: assets/fonts/Nunito-ExtraLight.ttf
+        - asset: assets/fonts/Nunito-ExtraLightItalic.ttf
+        - asset: assets/fonts/Nunito-Italic.ttf
+        - asset: assets/fonts/Nunito-Light.ttf
+        - asset: assets/fonts/Nunito-LightItalic.ttf
+        - asset: assets/fonts/Nunito-Regular.ttf
+        - asset: assets/fonts/Nunito-SemiBold.ttf
+        - asset: assets/fonts/Nunito-SemiBoldItalic.ttf
   #fonts:
   #  - family: ArchitecsDaughter
   #    fonts:
