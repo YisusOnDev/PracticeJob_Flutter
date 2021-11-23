@@ -1,14 +1,12 @@
-import 'dart:async';
-
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:practicejob/constants.dart';
 import 'package:practicejob/src/components/text_field_container.dart';
-import 'package:practicejob/src/models/user.dart';
 import 'package:practicejob/src/models/util.dart';
 import 'package:practicejob/src/pages/complete_profile_page.dart';
 import 'package:practicejob/src/pages/login_page.dart';
 import 'package:practicejob/src/services/auth_service.dart';
+import 'package:reactive_forms/reactive_forms.dart';
 
 class SignUpPage extends StatefulWidget {
   static var pageName = 'SignUp';
@@ -23,15 +21,16 @@ class SignUpPage extends StatefulWidget {
 
 class _SignUpPageState extends State<SignUpPage> {
   final AuthService _auth = AuthService();
-  String _email = "";
-  String _password = "";
-  String _passwordConfirm = "";
 
-  final _pwdController = TextEditingController();
-  final _pwdConfirmController = TextEditingController();
-  final _emailController = TextEditingController();
-  bool _pwdValidate = false;
-  bool _emailValidate = false;
+  final registerForm = FormGroup({
+    'email': FormControl<String>(
+        validators: [Validators.required, Validators.email]),
+    'password': FormControl<String>(validators: [Validators.required]),
+    'passwordConfirmation': FormControl<String>(),
+  }, validators: [
+    Validators.required,
+    Util.mustMatch('password', 'passwordConfirmation')
+  ]);
 
   @override
   Widget build(BuildContext context) {
@@ -64,7 +63,7 @@ class _SignUpPageState extends State<SignUpPage> {
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: <Widget>[
                   const Text(
-                    "REGISTRO",
+                    "SIGN UP",
                     style: TextStyle(fontWeight: FontWeight.bold),
                   ),
                   SizedBox(height: size.height * 0.03),
@@ -72,122 +71,12 @@ class _SignUpPageState extends State<SignUpPage> {
                     "assets/icons/signup.svg",
                     height: size.height * 0.35,
                   ),
-                  TextFieldContainer(
-                    child: TextField(
-                      onChanged: (value) {
-                        _email = value;
-                      },
-                      cursorColor: cPrimaryColor,
-                      controller: _emailController,
-                      decoration: InputDecoration(
-                        hintText: "Email",
-                        errorText:
-                            _emailValidate ? 'Email can\'t be empty' : null,
-                        icon: const Icon(
-                          Icons.person,
-                          color: cPrimaryColor,
-                        ),
-                        border: InputBorder.none,
-                      ),
-                    ),
-                  ),
-                  TextFieldContainer(
-                    child: TextField(
-                      obscureText: true,
-                      onChanged: (value) {
-                        _password = value;
-                      },
-                      cursorColor: cPrimaryColor,
-                      controller: _pwdController,
-                      decoration: InputDecoration(
-                        hintText: "Contraseña",
-                        errorText:
-                            _pwdValidate ? 'Password can\'t be empty' : null,
-                        icon: const Icon(
-                          Icons.lock,
-                          color: cPrimaryColor,
-                        ),
-                        border: InputBorder.none,
-                      ),
-                    ),
-                  ),
-                  TextFieldContainer(
-                    child: TextField(
-                      obscureText: true,
-                      onChanged: (value) {
-                        _passwordConfirm = value;
-                      },
-                      cursorColor: cPrimaryColor,
-                      controller: _pwdConfirmController,
-                      decoration: InputDecoration(
-                        hintText: "Confirmación de contraseña",
-                        errorText: _pwdValidate
-                            ? 'Password confirmation can\'t be empty'
-                            : null,
-                        icon: const Icon(
-                          Icons.lock,
-                          color: cPrimaryColor,
-                        ),
-                        border: InputBorder.none,
-                      ),
-                    ),
-                  ),
-                  Container(
-                    margin: const EdgeInsets.symmetric(vertical: 10),
-                    padding:
-                        const EdgeInsets.symmetric(horizontal: 20, vertical: 5),
-                    width: size.width * 0.8,
-                    decoration: BoxDecoration(
-                      color: cPrimaryColor,
-                      borderRadius: BorderRadius.circular(29),
-                    ),
-                    child: TextButton(
-                      onPressed: () async {
-                        setState(() {
-                          _pwdController.text.isEmpty
-                              ? _pwdValidate = true
-                              : _pwdValidate = false;
-                          _emailController.text.isEmpty
-                              ? _emailValidate = true
-                              : _emailValidate = false;
-                        });
-
-                        if (!_pwdValidate && !_emailValidate) {
-                          if (Util.hasEmailFormat(_email)) {
-                            if (_password == _passwordConfirm) {
-                              try {
-                                final res = await _auth
-                                    .register(User(null, _email, _password));
-                                if (res.statusCode == 200) {
-                                  Navigator.pushNamed(
-                                      context, CompleteProfilePage.pageName);
-                                } else {
-                                  Util.showMyDialog(context, "Error",
-                                      "An error has occurred. Please try again");
-                                }
-                              } on TimeoutException {
-                                Navigator.pushNamed(
-                                    context, CompleteProfilePage.pageName);
-                              }
-                            } else {
-                              Util.showMyDialog(context, "Error",
-                                  "Passwords must be the same.");
-                            }
-                          } else {
-                            Util.showMyDialog(context, "Error",
-                                "Please insert a valid email.");
-                          }
-                        }
-                      },
-                      style: TextButton.styleFrom(primary: Colors.white),
-                      child: const Text("REGISTRARSE"),
-                    ),
-                  ),
+                  buildRegisterForm(),
                   TextButton(
                       onPressed: () =>
                           Navigator.pushNamed(context, LoginPage.pageName),
                       style: TextButton.styleFrom(primary: cPrimaryColor),
-                      child: const Text("¿Ya tienes cuenta?")),
+                      child: const Text("Have an account?")),
                 ],
               ),
             ),
@@ -195,5 +84,99 @@ class _SignUpPageState extends State<SignUpPage> {
         ),
       ),
     );
+  }
+
+  Widget buildRegisterForm() {
+    Size size = MediaQuery.of(context).size;
+    return ReactiveForm(
+      formGroup: registerForm,
+      child: Column(
+        children: <Widget>[
+          TextFieldContainer(
+            child: ReactiveTextField(
+              formControlName: 'email',
+              validationMessages: (control) => {
+                'required': 'The email must not be empty',
+                'email': 'The email value must be a valid email'
+              },
+              decoration: const InputDecoration(
+                hintText: "Email",
+                icon: Icon(
+                  Icons.person,
+                  color: cPrimaryColor,
+                ),
+                border: InputBorder.none,
+              ),
+            ),
+          ),
+          TextFieldContainer(
+            child: ReactiveTextField(
+              formControlName: 'password',
+              obscureText: true,
+              validationMessages: (control) => {
+                'required': 'The password must not be empty',
+              },
+              decoration: const InputDecoration(
+                hintText: "Password",
+                icon: Icon(
+                  Icons.lock,
+                  color: cPrimaryColor,
+                ),
+                border: InputBorder.none,
+              ),
+            ),
+          ),
+          TextFieldContainer(
+            child: ReactiveTextField(
+              formControlName: 'passwordConfirmation',
+              obscureText: true,
+              validationMessages: (control) => {
+                'required': 'The password must not be empty',
+                'mustMatch': 'Passwords must match'
+              },
+              decoration: const InputDecoration(
+                hintText: "Password confirmation",
+                icon: Icon(
+                  Icons.lock,
+                  color: cPrimaryColor,
+                ),
+                border: InputBorder.none,
+              ),
+            ),
+          ),
+          Container(
+            margin: const EdgeInsets.symmetric(vertical: 10),
+            padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 5),
+            width: size.width * 0.8,
+            decoration: BoxDecoration(
+              color: cPrimaryColor,
+              borderRadius: BorderRadius.circular(29),
+            ),
+            child: TextButton(
+              onPressed: () async {
+                if (registerForm.valid) {
+                  doRegister();
+                }
+              },
+              style: TextButton.styleFrom(primary: Colors.white),
+              child: const Text("SIGN UP"),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  doRegister() async {
+    String _email = registerForm.control('email').value;
+    String _password = registerForm.control('password').value;
+    final res = await _auth.register(_email, _password);
+    print(res.statusCode);
+    if (res.statusCode == 200) {
+      Navigator.pushNamed(context, CompleteProfilePage.pageName);
+    } else {
+      Util.showMyDialog(
+          context, "Error", "An error has occurred. Please try again");
+    }
   }
 }

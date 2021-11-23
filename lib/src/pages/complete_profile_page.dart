@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:practicejob/constants.dart';
 import 'package:practicejob/src/components/profile_image.dart';
 import 'package:practicejob/src/pages/home_page.dart';
+import 'package:reactive_forms/reactive_forms.dart';
 
 class CompleteProfilePage extends StatefulWidget {
   static var pageName = 'CompleteProfilePage';
@@ -16,6 +17,18 @@ class CompleteProfilePage extends StatefulWidget {
 
 class _CompleteProfilePageState extends State<CompleteProfilePage> {
   bool showPassword = false;
+  final profileForm = FormGroup({
+    'name': FormControl<String>(validators: [Validators.required]),
+    'surname': FormControl<String>(validators: [Validators.required]),
+    'birthdate': FormControl<String>(validators: [Validators.required]),
+    'province': FormControl<String>(validators: [Validators.required]),
+    'city': FormControl<String>(validators: [Validators.required]),
+    'fplevel': FormControl<String>(validators: [Validators.required]),
+    'fpgrade': FormControl<String>(validators: [Validators.required]),
+    'fpname': FormControl<String>(validators: [Validators.required]),
+    'calification': FormControl<String>(
+        validators: [Validators.required, Validators.number]),
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -49,15 +62,15 @@ class _CompleteProfilePageState extends State<CompleteProfilePage> {
               const SizedBox(
                 height: 35,
               ),
-              buildTextField("Nombre", "", false),
-              buildTextField("Apellidos", "", false),
-              buildTextField("Fecha de nacimiento", "", false),
-              buildTextField("Provincia #", "", false),
-              buildTextField("Localidad", "", false),
-              buildTextField("Familia Profesional (FP) #", "", false),
-              buildTextField("Tipo de grado #", "", false),
-              buildTextField("Ciclo #", "", false),
-              buildTextField("Calificación #", "", false),
+              buildTextField("Name", ""),
+              buildTextField("Surnames", ""),
+              buildTextField("Birthdate", ""),
+              buildTextField("Province #", ""),
+              buildTextField("City", ""),
+              buildTextField("FP Level #", ""),
+              buildTextField("FP Grade Type #", ""),
+              buildTextField("FP Name #", ""),
+              buildTextField("Calification #", ""),
               ElevatedButton(
                   onPressed: () =>
                       Navigator.pushNamed(context, HomePage.pageName),
@@ -67,7 +80,7 @@ class _CompleteProfilePageState extends State<CompleteProfilePage> {
                       borderRadius: BorderRadius.circular(29.0),
                     ),
                   ),
-                  child: const Text('Confirmar')),
+                  child: const Text('Save profile')),
               const SizedBox(
                 height: 25,
               ),
@@ -78,26 +91,22 @@ class _CompleteProfilePageState extends State<CompleteProfilePage> {
     );
   }
 
-  Widget buildTextField(
-      String labelText, String placeholder, bool isPasswordTextField) {
+  Widget buildLoginForm() {
+    return ReactiveForm(
+      formGroup: profileForm,
+      child: Column(
+        children: <Widget>[
+          // HERE REACTIVE FORM AND HIS FIELDS
+        ],
+      ),
+    );
+  }
+
+  Widget buildTextField(String labelText, String placeholder) {
     return Padding(
       padding: const EdgeInsets.only(bottom: 25.0),
       child: TextFormField(
-        obscureText: isPasswordTextField ? showPassword : false,
         decoration: InputDecoration(
-            suffixIcon: isPasswordTextField
-                ? IconButton(
-                    onPressed: () {
-                      setState(() {
-                        showPassword = !showPassword;
-                      });
-                    },
-                    icon: const Icon(
-                      Icons.remove_red_eye,
-                      color: Colors.grey,
-                    ),
-                  )
-                : null,
             contentPadding: const EdgeInsets.only(bottom: 3),
             labelText: labelText,
             floatingLabelBehavior: FloatingLabelBehavior.always,

@@ -2,11 +2,12 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:practicejob/constants.dart';
 import 'package:practicejob/src/components/text_field_container.dart';
-import 'package:practicejob/src/models/user.dart';
 import 'package:practicejob/src/models/util.dart';
+import 'package:practicejob/src/pages/complete_profile_page.dart';
 import 'package:practicejob/src/pages/home_page.dart';
 import 'package:practicejob/src/pages/signup_page.dart';
 import 'package:practicejob/src/services/auth_service.dart';
+import 'package:reactive_forms/reactive_forms.dart';
 
 class LoginPage extends StatefulWidget {
   static var pageName = 'Login';
@@ -20,16 +21,17 @@ class LoginPage extends StatefulWidget {
 
 class _LoginPageState extends State<LoginPage> {
   final AuthService _auth = AuthService();
-  final _pwdController = TextEditingController();
-  final _emailController = TextEditingController();
-  bool _pwdValidate = false;
-  bool _emailValidate = false;
-  String _email = "";
-  String _password = "";
+
+  final loginForm = FormGroup({
+    'email': FormControl<String>(validators: [
+      Validators.required,
+      Validators.email,
+    ]),
+    'password': FormControl<String>(validators: [Validators.required]),
+  });
 
   @override
   void dispose() {
-    _pwdController.dispose();
     super.dispose();
   }
 
@@ -64,8 +66,9 @@ class _LoginPageState extends State<LoginPage> {
               mainAxisAlignment: MainAxisAlignment.center,
               children: <Widget>[
                 const Text(
-                  "INICIO DE SESIÓN",
-                  style: TextStyle(fontWeight: FontWeight.bold),
+                  "LOG IN",
+                  style: TextStyle(
+                      fontWeight: FontWeight.bold, color: cPrimaryColor),
                 ),
                 SizedBox(height: size.height * 0.03),
                 SvgPicture.asset(
@@ -73,95 +76,95 @@ class _LoginPageState extends State<LoginPage> {
                   height: size.height * 0.35,
                 ),
                 SizedBox(height: size.height * 0.03),
-                TextFieldContainer(
-                  child: TextField(
-                    onChanged: (value) {
-                      _email = value;
-                    },
-                    cursorColor: cPrimaryColor,
-                    controller: _emailController,
-                    decoration: InputDecoration(
-                      hintText: "Email",
-                      errorText:
-                          _emailValidate ? 'Email can\'t be empty' : null,
-                      icon: const Icon(
-                        Icons.person,
-                        color: cPrimaryColor,
-                      ),
-                      border: InputBorder.none,
-                    ),
-                  ),
-                ),
-                TextFieldContainer(
-                  child: TextField(
-                    obscureText: true,
-                    onChanged: (value) {
-                      _password = value;
-                    },
-                    cursorColor: cPrimaryColor,
-                    controller: _pwdController,
-                    decoration: InputDecoration(
-                      hintText: "Contraseña",
-                      errorText:
-                          _pwdValidate ? 'Password can\'t be empty' : null,
-                      icon: const Icon(
-                        Icons.lock,
-                        color: cPrimaryColor,
-                      ),
-                      border: InputBorder.none,
-                    ),
-                  ),
-                ),
-                Container(
-                  margin: const EdgeInsets.symmetric(vertical: 10),
-                  padding:
-                      const EdgeInsets.symmetric(horizontal: 20, vertical: 5),
-                  width: size.width * 0.8,
-                  decoration: BoxDecoration(
-                    color: cPrimaryColor,
-                    borderRadius: BorderRadius.circular(29),
-                  ),
-                  child: TextButton(
-                    onPressed: () async {
-                      setState(() {
-                        _pwdController.text.isEmpty
-                            ? _pwdValidate = true
-                            : _pwdValidate = false;
-                        _emailController.text.isEmpty
-                            ? _emailValidate = true
-                            : _emailValidate = false;
-                      });
-
-                      if (!_pwdValidate && !_emailValidate) {
-                        if (Util.hasEmailFormat(_email)) {
-                          final res =
-                              await _auth.login(User(null, _email, _password));
-                          if (res.statusCode == 200) {
-                            Navigator.pushNamed(context, HomePage.pageName);
-                          } else {
-                            Util.showMyDialog(
-                                context, "Error", "Invalid credentials.");
-                          }
-                        } else {
-                          Util.showMyDialog(
-                              context, "Error", "Please insert a valid email.");
-                        }
-                      }
-                    },
-                    style: TextButton.styleFrom(primary: Colors.white),
-                    child: const Text("INICIAR SESIÓN"),
-                  ),
-                ),
+                buildLoginForm(),
                 TextButton(
                     onPressed: () =>
                         Navigator.pushNamed(context, SignUpPage.pageName),
                     style: TextButton.styleFrom(primary: cPrimaryColor),
-                    child: const Text("¿No tienes cuenta aún?")),
+                    child: const Text("Don't have an account yet?")),
               ],
             ),
           ),
         ],
       ),
     ));
+  }
+
+  Widget buildLoginForm() {
+    Size size = MediaQuery.of(context).size;
+    return ReactiveForm(
+      formGroup: loginForm,
+      child: Column(
+        children: <Widget>[
+          TextFieldContainer(
+            child: ReactiveTextField(
+              formControlName: 'email',
+              validationMessages: (control) => {
+                'required': 'The email must not be empty',
+                'email': 'The email value must be a valid email'
+              },
+              decoration: const InputDecoration(
+                hintText: "Email",
+                icon: Icon(
+                  Icons.person,
+                  color: cPrimaryColor,
+                ),
+                border: InputBorder.none,
+              ),
+            ),
+          ),
+          TextFieldContainer(
+            child: ReactiveTextField(
+              formControlName: 'password',
+              obscureText: true,
+              validationMessages: (control) => {
+                'required': 'The password must not be empty',
+              },
+              decoration: const InputDecoration(
+                hintText: "Password",
+                icon: Icon(
+                  Icons.lock,
+                  color: cPrimaryColor,
+                ),
+                border: InputBorder.none,
+              ),
+            ),
+          ),
+          Container(
+            margin: const EdgeInsets.symmetric(vertical: 10),
+            padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 5),
+            width: size.width * 0.8,
+            decoration: BoxDecoration(
+              color: cPrimaryColor,
+              borderRadius: BorderRadius.circular(29),
+            ),
+            child: TextButton(
+              onPressed: () async {
+                if (loginForm.valid) {
+                  doLogin();
+                }
+              },
+              style: TextButton.styleFrom(primary: Colors.white),
+              child: const Text("LOG IN"),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  doLogin() async {
+    String _email = loginForm.control('email').value;
+    String _password = loginForm.control('password').value;
+
+    final res = await _auth.login(_email, _password);
+
+    if (res.statusCode == 200) {
+      // Map<String, dynamic> resultBody = jsonDecode(res.body);
+      Navigator.pushNamed(context, HomePage.pageName);
+    } else {
+      Navigator.pushNamed(context, CompleteProfilePage.pageName);
+      Util.showMyDialog(context, "Error", "Invalid credentials.");
+    }
   }
 }

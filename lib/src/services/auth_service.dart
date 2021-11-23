@@ -1,14 +1,17 @@
 import 'dart:convert';
 
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:http/http.dart' as http;
-import 'package:practicejob/src/models/user.dart';
 
 class AuthService {
   final baseUrl = 'http://10.0.2.2:5000';
-  // ignore: non_constant_identifier_names
-  // static final SESSION = FlutterSession();
+  final storage = const FlutterSecureStorage();
 
-  Future<http.Response> register(User u) {
+  saveDataToStorage(saveData) async {
+    return await storage.write(key: 'currentUser', value: saveData);
+  }
+
+  Future<http.Response> register(email, password) {
     var url = Uri.parse('$baseUrl/api/Auth/Create');
     return http
         .post(
@@ -16,19 +19,17 @@ class AuthService {
           headers: <String, String>{
             'Content-Type': 'application/json; charset=UTF-8',
           },
-          body: jsonEncode(
-              <String, String>{'email': u.email, 'password': u.password}),
+          body: jsonEncode(<String, String>{
+            'email': email,
+            'password': password,
+            'loginType': 'Student'
+          }),
         )
         .timeout(const Duration(seconds: 30));
   }
 
-  Future<http.Response> login(User u) {
+  Future<http.Response> login(email, password) {
     var url = Uri.parse('$baseUrl/api/Auth/Login');
-    print(jsonEncode(<String, String>{
-      'email': u.email,
-      'password': u.password,
-      'loginType': 'Student'
-    }));
     return http
         .post(
           url,
@@ -36,8 +37,8 @@ class AuthService {
             'Content-Type': 'application/json; charset=UTF-8',
           },
           body: jsonEncode(<String, String>{
-            'email': u.email,
-            'password': u.password,
+            'email': email,
+            'password': password,
             'loginType': 'Student'
           }),
         )

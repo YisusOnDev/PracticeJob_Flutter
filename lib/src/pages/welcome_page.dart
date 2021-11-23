@@ -38,7 +38,7 @@ class WelcomePage extends StatelessWidget {
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: <Widget>[
                   const Text(
-                    "BIENVENID@ A PRACTICEJOB",
+                    "WELCOME TO PRACTICEJOB",
                     style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
                   ),
                   SizedBox(height: size.height * 0.05),
@@ -57,7 +57,7 @@ class WelcomePage extends StatelessWidget {
                           borderRadius: BorderRadius.circular(29.0),
                         ),
                       ),
-                      child: const Text('INICIAR SESIÓN')),
+                      child: const Text('LOG IN')),
                   ElevatedButton(
                       onPressed: () =>
                           Navigator.pushNamed(context, SignUpPage.pageName),
@@ -68,7 +68,7 @@ class WelcomePage extends StatelessWidget {
                           borderRadius: BorderRadius.circular(29.0),
                         ),
                       ),
-                      child: const Text('CREAR CUENTA')),
+                      child: const Text('CREATE ACCOUNT')),
                 ],
               ),
             ),

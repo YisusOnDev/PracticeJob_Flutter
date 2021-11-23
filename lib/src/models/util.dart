@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:practicejob/constants.dart';
+import 'package:reactive_forms/reactive_forms.dart';
 
 class Util {
   static Future<void> showMyDialog(context, title, text) async {
@@ -28,9 +29,24 @@ class Util {
     );
   }
 
-  static bool hasEmailFormat(email) {
-    return RegExp(
-            r"^[a-zA-Z0-9.a-zA-Z0-9.!#$%&'*+-/=?^_`{|}~]+@[a-zA-Z0-9]+\.[a-zA-Z]+")
-        .hasMatch(email);
+  static ValidatorFunction mustMatch(
+      String controlName, String matchingControlName) {
+    return (AbstractControl<dynamic> control) {
+      final form = control as FormGroup;
+
+      final formControl = form.control(controlName);
+      final matchingFormControl = form.control(matchingControlName);
+
+      if (formControl.value != matchingFormControl.value) {
+        matchingFormControl.setErrors({'mustMatch': true});
+
+        // force messages to show up as soon as possible
+        matchingFormControl.markAsTouched();
+      } else {
+        matchingFormControl.removeError('mustMatch');
+      }
+
+      return null;
+    };
   }
 }
