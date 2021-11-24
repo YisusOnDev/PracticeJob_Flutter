@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:practicejob/constants.dart';
 
 class HomePage extends StatefulWidget {
   static var pageName = 'Home Page';
@@ -12,87 +13,29 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
-  final TextStyle homeCounterTextStyle = const TextStyle(
+  final TextStyle homeTextStyle = const TextStyle(
       height: 5,
       fontSize: 38,
       color: Colors.black,
-      backgroundColor: Colors.greenAccent);
-
-  int _counter = 0;
-
-  void _incrementCounter() {
-    setState(() {
-      _counter++;
-    });
-  }
-
-  void _decrementCounter() {
-    setState(() {
-      if (_counter - 1 >= 0) {
-        _counter--;
-      }
-    });
-  }
-
-  void _resetCounter() {
-    setState(() {
-      _counter = 0;
-    });
-  }
+      backgroundColor: cPrimaryLightColor);
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
         title: const Text('Home Page'),
+        backgroundColor: cPrimaryColor,
+        elevation: 1,
+        automaticallyImplyLeading: false,
       ),
       body: Center(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.start,
           children: <Widget>[
-            TextFormField(
-              decoration: const InputDecoration(
-                contentPadding:
-                    EdgeInsets.symmetric(horizontal: 25.0, vertical: 10.0),
-                labelText: 'Enter custom number for count:',
-                hintText: '10',
-              ),
-            ),
-            Text('Count: $_counter', style: homeCounterTextStyle),
+            Text('Bienvenido!', style: homeTextStyle),
           ],
         ),
       ),
-      floatingActionButton:
-          _interactionButtons(), // This trailing comma makes auto-formatting nicer for build methods.
-    );
-  }
-
-  Widget _interactionButtons() {
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.end,
-      children: <Widget>[
-        const SizedBox(width: 30),
-        FloatingActionButton(
-          heroTag: "incrementButton",
-          onPressed: _incrementCounter,
-          tooltip: 'Increment',
-          child: const Icon(Icons.add),
-        ),
-        const Expanded(child: SizedBox()),
-        FloatingActionButton(
-          heroTag: "resetButton",
-          onPressed: _resetCounter,
-          tooltip: 'Set 0',
-          child: const Text("0"),
-        ),
-        const Expanded(child: SizedBox()),
-        FloatingActionButton(
-          heroTag: "decrementButton",
-          onPressed: _decrementCounter,
-          tooltip: 'Decrement',
-          child: const Icon(Icons.remove),
-        ),
-      ],
     );
   }
 }
