@@ -171,8 +171,8 @@ class _SignUpPageState extends State<SignUpPage> {
     String _email = registerForm.control('email').value;
     String _password = registerForm.control('password').value;
     final res = await _auth.register(_email, _password);
-    print(res.statusCode);
     if (res.statusCode == 200) {
+      await _auth.saveDataToStorage(res.body);
       Navigator.pushNamed(context, CompleteProfilePage.pageName);
     } else {
       Util.showMyDialog(

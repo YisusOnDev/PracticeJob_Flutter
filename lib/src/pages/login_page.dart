@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:practicejob/constants.dart';
@@ -158,12 +160,15 @@ class _LoginPageState extends State<LoginPage> {
     String _password = loginForm.control('password').value;
 
     final res = await _auth.login(_email, _password);
-
     if (res.statusCode == 200) {
-      // Map<String, dynamic> resultBody = jsonDecode(res.body);
-      Navigator.pushNamed(context, HomePage.pageName);
+      await _auth.saveDataToStorage(res.body);
+
+      if (jsonDecode(res.body)['data']['name'] == null) {
+        Navigator.pushNamed(context, CompleteProfilePage.pageName);
+      } else {
+        Navigator.pushNamed(context, HomePage.pageName);
+      }
     } else {
-      Navigator.pushNamed(context, CompleteProfilePage.pageName);
       Util.showMyDialog(context, "Error", "Invalid credentials.");
     }
   }
