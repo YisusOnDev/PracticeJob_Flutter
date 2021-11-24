@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:practicejob/constants.dart';
 import 'package:practicejob/src/components/profile_image.dart';
 import 'package:practicejob/src/pages/home_page.dart';
+import 'package:reactive_date_time_picker/reactive_date_time_picker.dart';
+import 'package:reactive_dropdown_search/reactive_dropdown_search.dart';
 import 'package:reactive_forms/reactive_forms.dart';
 
 class CompleteProfilePage extends StatefulWidget {
@@ -20,14 +22,14 @@ class _CompleteProfilePageState extends State<CompleteProfilePage> {
   final profileForm = FormGroup({
     'name': FormControl<String>(validators: [Validators.required]),
     'surname': FormControl<String>(validators: [Validators.required]),
-    'birthdate': FormControl<String>(validators: [Validators.required]),
+    'birthdate': FormControl<DateTime>(validators: [Validators.required]),
     'province': FormControl<String>(validators: [Validators.required]),
     'city': FormControl<String>(validators: [Validators.required]),
     'fplevel': FormControl<String>(validators: [Validators.required]),
-    'fpgrade': FormControl<String>(validators: [Validators.required]),
+    'fpfamily': FormControl<String>(validators: [Validators.required]),
     'fpname': FormControl<String>(validators: [Validators.required]),
-    'calification': FormControl<String>(
-        validators: [Validators.required, Validators.number]),
+    'calification':
+        FormControl<int>(validators: [Validators.required, Validators.number]),
   });
 
   @override
@@ -37,13 +39,7 @@ class _CompleteProfilePageState extends State<CompleteProfilePage> {
         title: const Text('Completa tu perfil'),
         backgroundColor: cPrimaryColor,
         elevation: 1,
-        leading: IconButton(
-          icon: const Icon(
-            Icons.arrow_back,
-            color: cPrimaryLightColor,
-          ),
-          onPressed: () {},
-        ),
+        automaticallyImplyLeading: false,
       ),
       body: Container(
         margin: const EdgeInsets.symmetric(vertical: 10),
@@ -59,28 +55,7 @@ class _CompleteProfilePageState extends State<CompleteProfilePage> {
                     "https://images.pexels.com/photos/3307758/pexels-photo-3307758.jpeg?auto=compress&cs=tinysrgb&dpr=3&h=250",
                 onClicked: () {},
               ),
-              const SizedBox(
-                height: 35,
-              ),
-              buildTextField("Name", ""),
-              buildTextField("Surnames", ""),
-              buildTextField("Birthdate", ""),
-              buildTextField("Province #", ""),
-              buildTextField("City", ""),
-              buildTextField("FP Level #", ""),
-              buildTextField("FP Grade Type #", ""),
-              buildTextField("FP Name #", ""),
-              buildTextField("Calification #", ""),
-              ElevatedButton(
-                  onPressed: () =>
-                      Navigator.pushNamed(context, HomePage.pageName),
-                  style: ElevatedButton.styleFrom(
-                    primary: cPrimaryColor,
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(29.0),
-                    ),
-                  ),
-                  child: const Text('Save profile')),
+              buildLoginForm(),
               const SizedBox(
                 height: 25,
               ),
@@ -92,30 +67,209 @@ class _CompleteProfilePageState extends State<CompleteProfilePage> {
   }
 
   Widget buildLoginForm() {
-    return ReactiveForm(
-      formGroup: profileForm,
-      child: Column(
-        children: <Widget>[
-          // HERE REACTIVE FORM AND HIS FIELDS
-        ],
+    Size size = MediaQuery.of(context).size;
+    return Container(
+      margin: const EdgeInsets.symmetric(vertical: 10),
+      padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 5),
+      width: size.width * 0.8,
+      child: ReactiveForm(
+        formGroup: profileForm,
+        child: Column(
+          children: <Widget>[
+            ReactiveTextField(
+              formControlName: 'name',
+              validationMessages: (control) => {
+                'required': 'The name field must not be empty',
+              },
+              decoration: formDecoration(
+                  const Icon(
+                    Icons.person,
+                    color: cPrimaryColor,
+                  ),
+                  'Name'),
+            ),
+            ReactiveTextField(
+              formControlName: 'surname',
+              validationMessages: (control) => {
+                'required': 'The surname field must not be empty',
+              },
+              decoration: formDecoration(
+                  const Icon(
+                    Icons.person_add,
+                    color: cPrimaryColor,
+                  ),
+                  'Surname'),
+            ),
+            ReactiveDateTimePicker(
+              formControlName: 'birthdate',
+              validationMessages: (control) => {
+                'required': 'The birthdate field must not be empty',
+              },
+              decoration: formDecoration(
+                  const Icon(
+                    Icons.calendar_today,
+                    color: cPrimaryColor,
+                  ),
+                  'Birthdate'),
+            ),
+            ReactiveDropdownSearch<String, String>(
+              popupBackgroundColor: cPrimaryLightColor,
+              formControlName: 'province',
+              validationMessages: (control) => {
+                'required': 'The province field must not be empty',
+              },
+              decoration: formDecoration(
+                  const Icon(
+                    Icons.location_city_rounded,
+                    color: cPrimaryColor,
+                  ),
+                  'Province'),
+              mode: Mode.MENU,
+              showSelectedItems: true,
+              items: getProvinceList(),
+              showClearButton: true,
+            ),
+            ReactiveTextField(
+              formControlName: 'city',
+              validationMessages: (control) => {
+                'required': 'The city field must not be empty',
+              },
+              decoration: formDecoration(
+                  const Icon(
+                    Icons.apartment,
+                    color: cPrimaryColor,
+                  ),
+                  'City'),
+            ),
+            ReactiveDropdownSearch<String, String>(
+              popupBackgroundColor: cPrimaryLightColor,
+              formControlName: 'fplevel',
+              validationMessages: (control) => {
+                'required': 'The FP Level field must not be empty',
+              },
+              decoration: formDecoration(
+                  const Icon(
+                    Icons.location_city_rounded,
+                    color: cPrimaryColor,
+                  ),
+                  'FP Level'),
+              mode: Mode.MENU,
+              showSelectedItems: true,
+              items: getFpLevelList(),
+              showClearButton: true,
+            ),
+            ReactiveDropdownSearch<String, String>(
+              popupBackgroundColor: cPrimaryLightColor,
+              formControlName: 'fpfamily',
+              validationMessages: (control) => {
+                'required': 'The FP Family field must not be empty',
+              },
+              decoration: formDecoration(
+                  const Icon(
+                    Icons.location_city_rounded,
+                    color: cPrimaryColor,
+                  ),
+                  'FP Family'),
+              mode: Mode.MENU,
+              showSelectedItems: true,
+              items: getFpGradeList(),
+              showClearButton: true,
+            ),
+            ReactiveDropdownSearch<String, String>(
+              popupBackgroundColor: cPrimaryLightColor,
+              formControlName: 'fpname',
+              validationMessages: (control) => {
+                'required': 'The FP Name field must not be empty',
+              },
+              decoration: formDecoration(
+                  const Icon(
+                    Icons.location_city_rounded,
+                    color: cPrimaryColor,
+                  ),
+                  'FP Name'),
+              mode: Mode.MENU,
+              showSelectedItems: true,
+              items: getFpNameList(),
+              showClearButton: true,
+            ),
+            ReactiveTextField(
+              formControlName: 'calification',
+              validationMessages: (control) => {
+                'required': 'The calification field must not be empty',
+                'number': 'Calification must be a number',
+              },
+              decoration: formDecoration(
+                  const Icon(
+                    Icons.expand_more,
+                    color: cPrimaryColor,
+                  ),
+                  'Calification'),
+            ),
+            Container(
+              margin: const EdgeInsets.symmetric(vertical: 10),
+              padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 5),
+              child: ElevatedButton(
+                onPressed: () => doTrySaveProfile(),
+                style: ElevatedButton.styleFrom(
+                  minimumSize: Size(size.height, 50),
+                  primary: cPrimaryColor,
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(29.0),
+                  ),
+                ),
+                child: const Text('Save profile'),
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }
 
-  Widget buildTextField(String labelText, String placeholder) {
-    return Padding(
-      padding: const EdgeInsets.only(bottom: 25.0),
-      child: TextFormField(
-        decoration: InputDecoration(
-            contentPadding: const EdgeInsets.only(bottom: 3),
-            labelText: labelText,
-            floatingLabelBehavior: FloatingLabelBehavior.always,
-            hintText: placeholder,
-            hintStyle: const TextStyle(
-              fontSize: 16,
-              color: Colors.black,
-            )),
-      ),
-    );
+  InputDecoration formDecoration(Icon icon, label) {
+    return InputDecoration(
+        constraints: const BoxConstraints(minHeight: 60),
+        prefixIcon: icon,
+        border: const OutlineInputBorder(
+          borderRadius: BorderRadius.all(Radius.circular(29.0)),
+          borderSide: BorderSide(color: cPrimaryColor),
+        ),
+        focusedBorder: const OutlineInputBorder(
+          borderRadius: BorderRadius.all(Radius.circular(29.0)),
+          borderSide: BorderSide(color: cPrimaryColor),
+        ),
+        focusColor: cPrimaryColor,
+        fillColor: cPrimaryColor,
+        hoverColor: cPrimaryColor,
+        contentPadding: const EdgeInsets.only(bottom: 0),
+        labelText: label,
+        labelStyle: const TextStyle(color: Colors.black),
+        hintStyle: const TextStyle(
+          fontSize: 16,
+          color: Colors.black,
+        ));
+  }
+
+  getProvinceList() {
+    return ['Málaga', 'Madrid', 'Zaragoza'];
+  }
+
+  getFpLevelList() {
+    return ['CGB', 'CGM', 'CGS', 'FPS'];
+  }
+
+  getFpGradeList() {
+    return ['Informática', 'Diseño Gráfico', 'Gestión Empresarial'];
+  }
+
+  getFpNameList() {
+    return ['SMR', 'DAM', 'DAW'];
+  }
+
+  doTrySaveProfile() {
+    if (profileForm.valid) {
+      // Update to DB and Update SecureStorage
+      Navigator.pushNamed(context, HomePage.pageName);
+    }
   }
 }
