@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:practicejob/constants.dart';
+import 'package:practicejob/src/app_theme.dart';
 import 'package:practicejob/src/pages/complete_profile_page.dart';
 import 'package:practicejob/src/pages/home_page.dart';
 import 'package:practicejob/src/pages/login_page.dart';
@@ -15,14 +15,15 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    ThemeData appTheme = MyAppTheme(isDark: false).themeData;
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       title: 'PracticeJob App',
       theme: ThemeData(
-          brightness: Brightness.light,
-          primaryColor: cPrimaryColor,
-          scaffoldBackgroundColor: Colors.white,
-          fontFamily: 'Nunito'),
+          colorScheme: appTheme.colorScheme,
+          fontFamily: 'Nunito',
+          highlightColor: appTheme.highlightColor,
+          toggleableActiveColor: appTheme.toggleableActiveColor),
       initialRoute: '/',
       routes: _generateRoutes(context),
       onGenerateRoute: (settings) {
