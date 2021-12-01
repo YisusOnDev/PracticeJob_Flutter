@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
@@ -100,6 +101,7 @@ class _LoginPageState extends State<LoginPage> {
         children: <Widget>[
           TextFieldContainer(
             child: ReactiveTextField(
+              keyboardType: TextInputType.emailAddress,
               formControlName: 'email',
               validationMessages: (control) => {
                 'required': 'The email must not be empty',
@@ -158,18 +160,22 @@ class _LoginPageState extends State<LoginPage> {
   doLogin() async {
     String _email = loginForm.control('email').value;
     String _password = loginForm.control('password').value;
+    try {
+      final res = await _auth.login(_email, _password);
+      if (res.statusCode == 200) {
+        await _auth.saveDataToStorage(res.body);
 
-    final res = await _auth.login(_email, _password);
-    if (res.statusCode == 200) {
-      await _auth.saveDataToStorage(res.body);
-
-      if (jsonDecode(res.body)['data']['name'] == null) {
-        Navigator.pushNamed(context, CompleteProfilePage.pageName);
+        if (jsonDecode(res.body)['data']['name'] == null) {
+          Navigator.pushNamed(context, CompleteProfilePage.pageName);
+        } else {
+          Navigator.pushNamed(context, HomePage.pageName);
+        }
       } else {
-        Navigator.pushNamed(context, HomePage.pageName);
+        Util.showMyDialog(context, "Error", "Invalid credentials.");
       }
-    } else {
-      Util.showMyDialog(context, "Error", "Invalid credentials.");
+    } on TimeoutException catch (_) {
+      Util.showMyDialog(
+          context, "Error", "An error has occurred, please try again.");
     }
   }
 }

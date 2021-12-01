@@ -2,7 +2,6 @@ import 'dart:convert';
 
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:http/http.dart' as http;
-import 'package:practicejob/src/models/province.dart';
 import 'package:practicejob/src/models/user.dart';
 
 class AuthService {
@@ -11,32 +10,38 @@ class AuthService {
 
   saveDataToStorage(data) async {
     Map<String, dynamic> body = jsonDecode(data);
+    String? token = body['token'];
+    User u;
+    if (token != null && body['data'] != null) {
+      u = User.fromJson(body['data']);
+      u.token = token;
+    } else {
+      u = User.fromJson(body);
+      u.token = await getCurrentToken();
+    }
 
-    User u = User(
-      body['data']['id'],
-      body['data']['email'],
-      body['data']['name'],
-      body['data']['lastname'],
-      DateTime.parse(body['data']['birthDate']),
-      Province(
-        id: body['data']['province']['id'],
-        name: body['data']['province']['name'],
-      ),
-      body['data']['city'],
-      body['token'],
-    );
-    return await storage.write(
-        key: 'currentUser', value: u.toJson().toString());
+    return await storage.write(key: 'user', value: jsonEncode(u.toJson()));
   }
 
-  Future<dynamic> readFromStorage() async {
+  Future<User?> readFromStorage() async {
     String? storageData = await storage.read(key: 'currentUser');
+
     if (storageData != null) {
-      Map<String, dynamic> storageJson = jsonDecode(storageData);
-      var storageUser = User.fromJson(storageJson);
-      return storageUser;
+      final storageJson = jsonDecode(storageData);
+      final User userObject = User.fromJson(storageJson);
+      return userObject;
     } else {
       return null;
+    }
+  }
+
+  Future<String> getCurrentToken() async {
+    String? storageData = await storage.read(key: 'currentUser');
+    if (storageData != null) {
+      final storageJson = jsonDecode(storageData);
+      return storageJson['token'];
+    } else {
+      return "nodata";
     }
   }
 
@@ -54,7 +59,7 @@ class AuthService {
             'loginType': 'Student'
           }),
         )
-        .timeout(const Duration(seconds: 30));
+        .timeout(const Duration(seconds: 15));
   }
 
   Future<http.Response> login(email, password) {
@@ -71,52 +76,6 @@ class AuthService {
             'loginType': 'Student'
           }),
         )
-        .timeout(const Duration(seconds: 30));
+        .timeout(const Duration(seconds: 15));
   }
-
-  Future<http.Response> update(email, password) {
-    var url = Uri.parse('$baseUrl/api/Auth/Login');
-    return http
-        .post(
-          url,
-          headers: <String, String>{
-            'Content-Type': 'application/json; charset=UTF-8',
-          },
-          body: jsonEncode(<String, String>{
-            'email': email,
-            'password': password,
-            'loginType': 'Student'
-          }),
-        )
-        .timeout(const Duration(seconds: 30));
-  }
-
-  /*static setToken(String token, String refreshToken) async {
-    _AuthData data = _AuthData(token, refreshToken);
-    await SESSION.set('tokens', data);
-  }*/
-
-  /*static Future<Map<String, dynamic>> getToken() async {
-    return await SESSION.get('tokens');
-  }*/
-
-  /*static removeToken() async {
-    await SESSION.prefs.clear();
-  }*/
 }
-
-/*class _AuthData {
-  String token, refreshToken, clientId;
-  _AuthData(this.token, this.refreshToken, {this.clientId});
-
-  // toJson
-  // required by Session lib
-  Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = Map<String, dynamic>();
-
-    data['token'] = token;
-    data['refreshToken'] = refreshToken;
-    data['clientId'] = clientId;
-    return data;
-  }
-}*/

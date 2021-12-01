@@ -6,13 +6,14 @@ part 'user.g.dart';
 @JsonSerializable()
 class User {
   User(this.id, this.email, this.name, this.lastname, this.birthdate,
-      this.province, this.city, this.token);
+      this.provinceId, this.province, this.city, this.token);
 
   int? id;
   String? email;
   String? name;
   String? lastname;
   DateTime? birthdate;
+  int provinceId;
   Province? province;
   String? city;
   String? token;

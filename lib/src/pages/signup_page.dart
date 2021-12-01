@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:practicejob/constants.dart';
@@ -94,6 +96,7 @@ class _SignUpPageState extends State<SignUpPage> {
         children: <Widget>[
           TextFieldContainer(
             child: ReactiveTextField(
+              keyboardType: TextInputType.emailAddress,
               formControlName: 'email',
               validationMessages: (control) => {
                 'required': 'The email must not be empty',
@@ -170,13 +173,18 @@ class _SignUpPageState extends State<SignUpPage> {
   doRegister() async {
     String _email = registerForm.control('email').value;
     String _password = registerForm.control('password').value;
-    final res = await _auth.register(_email, _password);
-    if (res.statusCode == 200) {
-      await _auth.saveDataToStorage(res.body);
-      Navigator.pushNamed(context, CompleteProfilePage.pageName);
-    } else {
+    try {
+      final res = await _auth.register(_email, _password);
+      if (res.statusCode == 200) {
+        await _auth.saveDataToStorage(res.body);
+        Navigator.pushNamed(context, CompleteProfilePage.pageName);
+      } else {
+        Util.showMyDialog(
+            context, "Error", "An account with this email already exists.");
+      }
+    } on TimeoutException catch (_) {
       Util.showMyDialog(
-          context, "Error", "An error has occurred. Please try again");
+          context, "Error", "An error has occurred, please try again.");
     }
   }
 }

@@ -1,7 +1,14 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:practicejob/constants.dart';
 import 'package:practicejob/src/components/profile_image.dart';
+import 'package:practicejob/src/models/user.dart';
+import 'package:practicejob/src/models/util.dart';
 import 'package:practicejob/src/pages/home_page.dart';
+import 'package:practicejob/src/services/auth_service.dart';
+import 'package:practicejob/src/services/student_service.dart';
 import 'package:reactive_date_time_picker/reactive_date_time_picker.dart';
 import 'package:reactive_dropdown_search/reactive_dropdown_search.dart';
 import 'package:reactive_forms/reactive_forms.dart';
@@ -18,7 +25,9 @@ class CompleteProfilePage extends StatefulWidget {
 }
 
 class _CompleteProfilePageState extends State<CompleteProfilePage> {
-  bool showPassword = false;
+  final StudentService _studentService = StudentService();
+  final AuthService _authService = AuthService();
+
   final profileForm = FormGroup({
     'name': FormControl<String>(validators: [Validators.required]),
     'surname': FormControl<String>(validators: [Validators.required]),
@@ -32,18 +41,27 @@ class _CompleteProfilePageState extends State<CompleteProfilePage> {
         FormControl<int>(validators: [Validators.required, Validators.number]),
   });
 
+  String _imagePath = "https://i.imgur.com/NEYyj2d.png";
+
   @override
   Widget build(BuildContext context) {
+    Size size = MediaQuery.of(context).size;
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Completa tu perfil'),
+        title: const Text('Complete your profile'),
+        toolbarHeight: size.height / 8,
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.vertical(
+            bottom: Radius.elliptical(size.width, 29.0),
+          ),
+        ),
         backgroundColor: cPrimaryColor,
         elevation: 1,
         automaticallyImplyLeading: false,
       ),
       body: Container(
-        margin: const EdgeInsets.symmetric(vertical: 10),
-        padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 5),
+        margin: const EdgeInsets.symmetric(vertical: 0),
+        padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
         child: GestureDetector(
           onTap: () {
             FocusScope.of(context).unfocus();
@@ -51,11 +69,21 @@ class _CompleteProfilePageState extends State<CompleteProfilePage> {
           child: ListView(
             children: [
               ProfileWidget(
-                imagePath:
-                    "https://images.pexels.com/photos/3307758/pexels-photo-3307758.jpeg?auto=compress&cs=tinysrgb&dpr=3&h=250",
-                onClicked: () {},
+                imagePath: _imagePath,
+                onClicked: () async {
+                  final XFile? image = await ImagePicker()
+                      .pickImage(source: ImageSource.gallery);
+                  if (image != null) {
+                    setState(() {
+                      _imagePath = image.path;
+                    });
+                  } else {
+                    Util.showMyDialog(
+                        context, "Error", "Please, select an image.");
+                  }
+                },
               ),
-              buildLoginForm(),
+              buildCompleteProfileForm(),
               const SizedBox(
                 height: 25,
               ),
@@ -66,7 +94,7 @@ class _CompleteProfilePageState extends State<CompleteProfilePage> {
     );
   }
 
-  Widget buildLoginForm() {
+  Widget buildCompleteProfileForm() {
     Size size = MediaQuery.of(context).size;
     return Container(
       margin: const EdgeInsets.symmetric(vertical: 10),
@@ -193,10 +221,12 @@ class _CompleteProfilePageState extends State<CompleteProfilePage> {
               showClearButton: true,
             ),
             ReactiveTextField(
+              keyboardType: TextInputType.number,
               formControlName: 'calification',
               validationMessages: (control) => {
-                'required': 'The calification field must not be empty',
                 'number': 'Calification must be a number',
+                'required':
+                    'The calification field must not be empty and must be a number',
               },
               decoration: formDecoration(
                   const Icon(
@@ -266,10 +296,44 @@ class _CompleteProfilePageState extends State<CompleteProfilePage> {
     return ['SMR', 'DAM', 'DAW'];
   }
 
-  doTrySaveProfile() {
+  doTrySaveProfile() async {
     if (profileForm.valid) {
-      // Update to DB and Update SecureStorage
-      Navigator.pushNamed(context, HomePage.pageName);
+      User? user = await _authService.readFromStorage();
+      if (user != null) {
+        String name = profileForm.control('name').value;
+        String surname = profileForm.control('surname').value;
+        DateTime birthdate = profileForm.control('birthdate').value;
+        // String province = profileForm.control('province').value;
+        int provinceId = 29; // GetProvinceId selected from array
+        String city = profileForm.control('city').value;
+        // String fplevel = profileForm.control('fplevel').value;
+        // String fpfamily = profileForm.control('fpfamily').value;
+        // String fpname = profileForm.control('fpname').value;
+        // int calification = profileForm.control('calification').value;
+
+        user.name = name;
+        user.lastname = surname;
+        user.birthdate = birthdate;
+        user.provinceId = provinceId;
+        user.city = city;
+
+        try {
+          final res = await _studentService.update(user.toJson());
+          if (res.statusCode == 200) {
+            await _authService.saveDataToStorage(res.body);
+            Navigator.pushNamed(context, HomePage.pageName);
+          } else {
+            Util.showMyDialog(context, "Error",
+                "Your profile couldn't be saved, if this happens again contact an Administrator.");
+          }
+        } on TimeoutException catch (_) {
+          Util.showMyDialog(
+              context, "Error", "An error has occurred, please try again.");
+        }
+      } else {
+        Util.showMyDialog(context, "Error", "Your session has expired.");
+        Navigator.pushNamed(context, '/');
+      }
     }
   }
 }
