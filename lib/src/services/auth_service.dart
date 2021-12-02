@@ -21,7 +21,8 @@ class AuthService {
       u.token = await getCurrentToken();
     }
 
-    return await storage.write(key: 'user', value: jsonEncode(u.toJson()));
+    return await storage.write(
+        key: 'currentUser', value: jsonEncode(u.toJson()));
   }
 
   Future<User?> readFromStorage() async {
@@ -36,6 +37,10 @@ class AuthService {
     }
   }
 
+  logout() async {
+    await storage.deleteAll();
+  }
+
   Future<String> getCurrentToken() async {
     String? storageData = await storage.read(key: 'currentUser');
     if (storageData != null) {
@@ -43,6 +48,17 @@ class AuthService {
       return storageJson['token'];
     } else {
       return "nodata";
+    }
+  }
+
+  Future<bool> isAuthenticated() async {
+    String? storageData = await storage.read(key: 'currentUser');
+    if (storageData != null) {
+      final storageJson = jsonDecode(storageData);
+      // In futue we'll need to check if token is still valid and so...
+      return storageJson['token'] != null;
+    } else {
+      return false;
     }
   }
 

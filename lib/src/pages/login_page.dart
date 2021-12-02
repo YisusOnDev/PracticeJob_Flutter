@@ -3,12 +3,10 @@ import 'dart:convert';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
-import 'package:practicejob/constants.dart';
+import 'package:practicejob/app_constants.dart';
 import 'package:practicejob/src/components/text_field_container.dart';
 import 'package:practicejob/src/models/util.dart';
-import 'package:practicejob/src/pages/complete_profile_page.dart';
-import 'package:practicejob/src/pages/home_page.dart';
-import 'package:practicejob/src/pages/signup_page.dart';
+import 'package:auto_route/auto_route.dart';
 import 'package:practicejob/src/services/auth_service.dart';
 import 'package:reactive_forms/reactive_forms.dart';
 
@@ -81,8 +79,7 @@ class _LoginPageState extends State<LoginPage> {
                 SizedBox(height: size.height * 0.03),
                 buildLoginForm(),
                 TextButton(
-                    onPressed: () =>
-                        Navigator.pushNamed(context, SignUpPage.pageName),
+                    onPressed: () => context.router.pushNamed('/signup'),
                     style: TextButton.styleFrom(primary: cPrimaryColor),
                     child: const Text("Don't have an account yet?")),
               ],
@@ -166,9 +163,9 @@ class _LoginPageState extends State<LoginPage> {
         await _authService.saveDataToStorage(res.body);
 
         if (jsonDecode(res.body)['data']['name'] == null) {
-          Navigator.pushNamed(context, CompleteProfilePage.pageName);
+          context.router.replaceNamed('/completeprofile');
         } else {
-          Navigator.pushNamed(context, HomePage.pageName);
+          context.router.replaceNamed('/home');
         }
       } else {
         Util.showMyDialog(context, "Error", "Invalid credentials.");

@@ -1,12 +1,11 @@
 import 'dart:async';
 
+import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
-import 'package:practicejob/constants.dart';
+import 'package:practicejob/app_constants.dart';
 import 'package:practicejob/src/components/text_field_container.dart';
 import 'package:practicejob/src/models/util.dart';
-import 'package:practicejob/src/pages/complete_profile_page.dart';
-import 'package:practicejob/src/pages/login_page.dart';
 import 'package:practicejob/src/services/auth_service.dart';
 import 'package:reactive_forms/reactive_forms.dart';
 
@@ -75,8 +74,7 @@ class _SignUpPageState extends State<SignUpPage> {
                   ),
                   buildRegisterForm(),
                   TextButton(
-                      onPressed: () =>
-                          Navigator.pushNamed(context, LoginPage.pageName),
+                      onPressed: () => context.router.pushNamed('/login'),
                       style: TextButton.styleFrom(primary: cPrimaryColor),
                       child: const Text("Have an account?")),
                 ],
@@ -177,7 +175,7 @@ class _SignUpPageState extends State<SignUpPage> {
       final res = await _authService.register(_email, _password);
       if (res.statusCode == 200) {
         await _authService.saveDataToStorage(res.body);
-        Navigator.pushNamed(context, CompleteProfilePage.pageName);
+        context.router.replaceNamed('/completeprofile');
       } else {
         Util.showMyDialog(
             context, "Error", "An account with this email already exists.");

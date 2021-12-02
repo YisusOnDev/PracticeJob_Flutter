@@ -1,14 +1,12 @@
 import 'package:flutter/material.dart';
-import 'package:practicejob/src/app_theme.dart';
-import 'package:practicejob/src/pages/complete_profile_page.dart';
-import 'package:practicejob/src/pages/home_page.dart';
-import 'package:practicejob/src/pages/login_page.dart';
-import 'package:practicejob/src/pages/signup_page.dart';
-import 'package:practicejob/src/pages/welcome_page.dart';
+import 'package:practicejob/app_theme.dart';
+import 'package:practicejob/src/routes/app_routes.dart';
 
 void main() {
   runApp(const MyApp());
 }
+
+final _appRouter = AppRouter();
 
 class MyApp extends StatelessWidget {
   const MyApp({Key? key}) : super(key: key);
@@ -16,7 +14,9 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     ThemeData appTheme = MyAppTheme(isDark: false).themeData;
-    return MaterialApp(
+    return MaterialApp.router(
+      routerDelegate: _appRouter.delegate(),
+      routeInformationParser: _appRouter.defaultRouteParser(),
       debugShowCheckedModeBanner: false,
       title: 'PracticeJob App',
       theme: ThemeData(
@@ -24,21 +24,6 @@ class MyApp extends StatelessWidget {
           fontFamily: 'Nunito',
           highlightColor: appTheme.highlightColor,
           toggleableActiveColor: appTheme.toggleableActiveColor),
-      initialRoute: '/',
-      routes: _generateRoutes(context),
-      onGenerateRoute: (settings) {
-        return MaterialPageRoute(builder: (context) => const HomePage());
-      },
     );
-  }
-
-  Map<String, WidgetBuilder> _generateRoutes(context) {
-    return <String, WidgetBuilder>{
-      '/': (context) => const WelcomePage(),
-      LoginPage.pageName: (context) => const LoginPage(),
-      SignUpPage.pageName: (context) => const SignUpPage(),
-      HomePage.pageName: (context) => const HomePage(),
-      CompleteProfilePage.pageName: (context) => const CompleteProfilePage()
-    };
   }
 }

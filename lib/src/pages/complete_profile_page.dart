@@ -2,15 +2,16 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
-import 'package:practicejob/constants.dart';
+import 'package:practicejob/app_constants.dart';
 import 'package:practicejob/src/components/profile_image.dart';
+import 'package:practicejob/src/models/province.dart';
 import 'package:practicejob/src/models/user.dart';
 import 'package:practicejob/src/models/util.dart';
-import 'package:practicejob/src/pages/home_page.dart';
+import 'package:auto_route/auto_route.dart';
 import 'package:practicejob/src/services/auth_service.dart';
+import 'package:practicejob/src/services/province_service.dart';
 import 'package:practicejob/src/services/student_service.dart';
 import 'package:reactive_date_time_picker/reactive_date_time_picker.dart';
-import 'package:reactive_dropdown_search/reactive_dropdown_search.dart';
 import 'package:reactive_forms/reactive_forms.dart';
 
 class CompleteProfilePage extends StatefulWidget {
@@ -27,18 +28,19 @@ class CompleteProfilePage extends StatefulWidget {
 class _CompleteProfilePageState extends State<CompleteProfilePage> {
   final StudentService _studentService = StudentService();
   final AuthService _authService = AuthService();
+  final ProvinceService _provinceService = ProvinceService();
 
   final profileForm = FormGroup({
     'name': FormControl<String>(validators: [Validators.required]),
     'surname': FormControl<String>(validators: [Validators.required]),
     'birthdate': FormControl<DateTime>(validators: [Validators.required]),
-    'province': FormControl<String>(validators: [Validators.required]),
+    'province': FormControl<Province>(validators: [Validators.required]),
     'city': FormControl<String>(validators: [Validators.required]),
-    'fplevel': FormControl<String>(validators: [Validators.required]),
-    'fpfamily': FormControl<String>(validators: [Validators.required]),
-    'fpname': FormControl<String>(validators: [Validators.required]),
-    'calification':
-        FormControl<int>(validators: [Validators.required, Validators.number]),
+    //'fplevel': FormControl<String>(validators: [Validators.required]),
+    //'fpfamily': FormControl<String>(validators: [Validators.required]),
+    //'fpname': FormControl<String>(validators: [Validators.required]),
+    //'calification':
+    //    FormControl<int>(validators: [Validators.required, Validators.number]),
   });
 
   String _imagePath = "https://i.imgur.com/NEYyj2d.png";
@@ -140,22 +142,25 @@ class _CompleteProfilePageState extends State<CompleteProfilePage> {
                   ),
                   'Birthdate'),
             ),
-            ReactiveDropdownSearch<String, String>(
-              popupBackgroundColor: cPrimaryLightColor,
-              formControlName: 'province',
-              validationMessages: (control) => {
-                'required': 'The province field must not be empty',
+            FutureBuilder(
+              future: _provinceService.getAll(),
+              initialData: const [],
+              builder: (BuildContext context, AsyncSnapshot snapshot) {
+                if (snapshot.hasData) {
+                  return ReactiveDropdownField<Province>(
+                    formControlName: 'province',
+                    decoration: formDecoration(
+                        const Icon(
+                          Icons.location_city_rounded,
+                          color: cPrimaryColor,
+                        ),
+                        'Province'),
+                    items: getProvinceList(snapshot.data),
+                  );
+                } else {
+                  return const CircularProgressIndicator();
+                }
               },
-              decoration: formDecoration(
-                  const Icon(
-                    Icons.location_city_rounded,
-                    color: cPrimaryColor,
-                  ),
-                  'Province'),
-              mode: Mode.MENU,
-              showSelectedItems: true,
-              items: getProvinceList(),
-              showClearButton: true,
             ),
             ReactiveTextField(
               formControlName: 'city',
@@ -169,8 +174,7 @@ class _CompleteProfilePageState extends State<CompleteProfilePage> {
                   ),
                   'City'),
             ),
-            ReactiveDropdownSearch<String, String>(
-              popupBackgroundColor: cPrimaryLightColor,
+            /*ReactiveDropdownField<String>(
               formControlName: 'fplevel',
               validationMessages: (control) => {
                 'required': 'The FP Level field must not be empty',
@@ -181,13 +185,9 @@ class _CompleteProfilePageState extends State<CompleteProfilePage> {
                     color: cPrimaryColor,
                   ),
                   'FP Level'),
-              mode: Mode.MENU,
-              showSelectedItems: true,
               items: getFpLevelList(),
-              showClearButton: true,
             ),
-            ReactiveDropdownSearch<String, String>(
-              popupBackgroundColor: cPrimaryLightColor,
+            ReactiveDropdownField<String>(
               formControlName: 'fpfamily',
               validationMessages: (control) => {
                 'required': 'The FP Family field must not be empty',
@@ -198,13 +198,9 @@ class _CompleteProfilePageState extends State<CompleteProfilePage> {
                     color: cPrimaryColor,
                   ),
                   'FP Family'),
-              mode: Mode.MENU,
-              showSelectedItems: true,
               items: getFpGradeList(),
-              showClearButton: true,
             ),
-            ReactiveDropdownSearch<String, String>(
-              popupBackgroundColor: cPrimaryLightColor,
+            ReactiveDropdownField<String>(
               formControlName: 'fpname',
               validationMessages: (control) => {
                 'required': 'The FP Name field must not be empty',
@@ -215,10 +211,7 @@ class _CompleteProfilePageState extends State<CompleteProfilePage> {
                     color: cPrimaryColor,
                   ),
                   'FP Name'),
-              mode: Mode.MENU,
-              showSelectedItems: true,
               items: getFpNameList(),
-              showClearButton: true,
             ),
             ReactiveTextField(
               keyboardType: TextInputType.number,
@@ -234,7 +227,7 @@ class _CompleteProfilePageState extends State<CompleteProfilePage> {
                     color: cPrimaryColor,
                   ),
                   'Calification'),
-            ),
+            ),*/
             Container(
               margin: const EdgeInsets.symmetric(vertical: 10),
               padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 5),
@@ -280,8 +273,12 @@ class _CompleteProfilePageState extends State<CompleteProfilePage> {
         ));
   }
 
-  getProvinceList() {
-    return ['Málaga', 'Madrid', 'Zaragoza'];
+  List<DropdownMenuItem<Province>> getProvinceList(data) {
+    final List<DropdownMenuItem<Province>> provinceList = [];
+    for (Province p in data) {
+      provinceList.add(DropdownMenuItem(child: Text(p.name), value: p));
+    }
+    return provinceList;
   }
 
   getFpLevelList() {
@@ -303,8 +300,8 @@ class _CompleteProfilePageState extends State<CompleteProfilePage> {
         String name = profileForm.control('name').value;
         String surname = profileForm.control('surname').value;
         DateTime birthdate = profileForm.control('birthdate').value;
-        // String province = profileForm.control('province').value;
-        int provinceId = 29; // GetProvinceId selected from array
+        Province province = profileForm.control('province').value;
+        int provinceId = province.id; // GetProvinceId selected from array
         String city = profileForm.control('city').value;
         // String fplevel = profileForm.control('fplevel').value;
         // String fpfamily = profileForm.control('fpfamily').value;
@@ -314,6 +311,7 @@ class _CompleteProfilePageState extends State<CompleteProfilePage> {
         user.name = name;
         user.lastname = surname;
         user.birthdate = birthdate;
+        user.province = province;
         user.provinceId = provinceId;
         user.city = city;
 
@@ -321,7 +319,7 @@ class _CompleteProfilePageState extends State<CompleteProfilePage> {
           final res = await _studentService.update(user.toJson());
           if (res.statusCode == 200) {
             await _authService.saveDataToStorage(res.body);
-            Navigator.pushNamed(context, HomePage.pageName);
+            context.router.replaceNamed('/home');
           } else {
             Util.showMyDialog(context, "Error",
                 "Your profile couldn't be saved, if this happens again contact an Administrator.");
@@ -332,7 +330,7 @@ class _CompleteProfilePageState extends State<CompleteProfilePage> {
         }
       } else {
         Util.showMyDialog(context, "Error", "Your session has expired.");
-        Navigator.pushNamed(context, '/');
+        context.router.replaceNamed('/');
       }
     }
   }

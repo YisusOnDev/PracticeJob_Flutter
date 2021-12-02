@@ -1,8 +1,8 @@
+import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
-import 'package:practicejob/constants.dart';
-import 'package:practicejob/src/pages/login_page.dart';
-import 'package:practicejob/src/pages/signup_page.dart';
+import 'package:practicejob/app_constants.dart';
+import 'package:practicejob/src/services/auth_service.dart';
 
 class WelcomePage extends StatelessWidget {
   const WelcomePage({Key? key, this.title}) : super(key: key);
@@ -11,7 +11,21 @@ class WelcomePage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    return FutureBuilder<bool>(
+      future: AuthService().isAuthenticated(),
+      initialData: false,
+      builder: (BuildContext context, AsyncSnapshot snapshot) {
+        if (snapshot.hasData && snapshot.data == true) {
+          context.router.replaceNamed('/home');
+        }
+        return buildWelcomePage(context);
+      },
+    );
+  }
+
+  Widget buildWelcomePage(context) {
     Size size = MediaQuery.of(context).size;
+    final router = AutoRouter.of(context);
     return Scaffold(
       body: SizedBox(
           height: size.height,
@@ -48,8 +62,7 @@ class WelcomePage extends StatelessWidget {
                   ),
                   SizedBox(height: size.height * 0.05),
                   ElevatedButton(
-                      onPressed: () =>
-                          Navigator.pushNamed(context, LoginPage.pageName),
+                      onPressed: () => router.pushNamed('/login'),
                       style: ElevatedButton.styleFrom(
                         fixedSize: Size(size.width * 0.5, 25),
                         primary: cPrimaryColor,
@@ -59,8 +72,7 @@ class WelcomePage extends StatelessWidget {
                       ),
                       child: const Text('LOG IN')),
                   ElevatedButton(
-                      onPressed: () =>
-                          Navigator.pushNamed(context, SignUpPage.pageName),
+                      onPressed: () => router.pushNamed('/signup'),
                       style: ElevatedButton.styleFrom(
                         fixedSize: Size(size.width * 0.5, 25),
                         primary: cPrimaryColor,
