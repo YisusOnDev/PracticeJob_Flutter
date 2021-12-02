@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'dart:io';
 
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:http/http.dart' as http;
@@ -50,8 +51,9 @@ class AuthService {
     return http
         .post(
           url,
-          headers: <String, String>{
-            'Content-Type': 'application/json; charset=UTF-8',
+          headers: {
+            HttpHeaders.contentTypeHeader: 'application/json',
+            HttpHeaders.acceptHeader: 'application/json',
           },
           body: jsonEncode(<String, String>{
             'email': email,
@@ -67,8 +69,9 @@ class AuthService {
     return http
         .post(
           url,
-          headers: <String, String>{
-            'Content-Type': 'application/json; charset=UTF-8',
+          headers: {
+            HttpHeaders.contentTypeHeader: 'application/json',
+            HttpHeaders.acceptHeader: 'application/json',
           },
           body: jsonEncode(<String, String>{
             'email': email,

@@ -23,7 +23,7 @@ class LoginPage extends StatefulWidget {
 }
 
 class _LoginPageState extends State<LoginPage> {
-  final AuthService _auth = AuthService();
+  final AuthService _authService = AuthService();
 
   final loginForm = FormGroup({
     'email': FormControl<String>(validators: [
@@ -161,9 +161,9 @@ class _LoginPageState extends State<LoginPage> {
     String _email = loginForm.control('email').value;
     String _password = loginForm.control('password').value;
     try {
-      final res = await _auth.login(_email, _password);
+      final res = await _authService.login(_email, _password);
       if (res.statusCode == 200) {
-        await _auth.saveDataToStorage(res.body);
+        await _authService.saveDataToStorage(res.body);
 
         if (jsonDecode(res.body)['data']['name'] == null) {
           Navigator.pushNamed(context, CompleteProfilePage.pageName);

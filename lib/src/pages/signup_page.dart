@@ -22,7 +22,7 @@ class SignUpPage extends StatefulWidget {
 }
 
 class _SignUpPageState extends State<SignUpPage> {
-  final AuthService _auth = AuthService();
+  final AuthService _authService = AuthService();
 
   final registerForm = FormGroup({
     'email': FormControl<String>(
@@ -174,9 +174,9 @@ class _SignUpPageState extends State<SignUpPage> {
     String _email = registerForm.control('email').value;
     String _password = registerForm.control('password').value;
     try {
-      final res = await _auth.register(_email, _password);
+      final res = await _authService.register(_email, _password);
       if (res.statusCode == 200) {
-        await _auth.saveDataToStorage(res.body);
+        await _authService.saveDataToStorage(res.body);
         Navigator.pushNamed(context, CompleteProfilePage.pageName);
       } else {
         Util.showMyDialog(
