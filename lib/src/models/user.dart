@@ -1,21 +1,37 @@
 import 'package:json_annotation/json_annotation.dart';
+import 'package:practicejob/src/models/fp.dart';
 import 'package:practicejob/src/models/province.dart';
+
 part 'user.g.dart';
 
-/// flutter pub run build_runner build
 @JsonSerializable()
 class User {
-  User(this.id, this.email, this.name, this.lastname, this.birthdate,
-      this.provinceId, this.province, this.city, this.token);
+  User(
+      this.id,
+      this.email,
+      this.name,
+      this.lastname,
+      this.birthdate,
+      this.provinceId,
+      this.province,
+      this.city,
+      this.fpId,
+      this.fp,
+      this.fpCalification,
+      this.token);
 
   int? id;
   String? email;
   String? name;
   String? lastname;
   DateTime? birthdate;
-  int provinceId;
+  int? provinceId;
   Province? province;
   String? city;
+  int? fpId;
+  FP? fp;
+  double? fpCalification;
+
   String? token;
 
   factory User.fromJson(Map<String, dynamic> json) => _$UserFromJson(json);

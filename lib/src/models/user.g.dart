@@ -14,11 +14,16 @@ User _$UserFromJson(Map<String, dynamic> json) => User(
       json['birthdate'] == null
           ? null
           : DateTime.parse(json['birthdate'] as String),
-      json['provinceId'] as int,
+      json['provinceId'] as int?,
       json['province'] == null
           ? null
           : Province.fromJson(json['province'] as Map<String, dynamic>),
       json['city'] as String?,
+      json['fpId'] as int?,
+      json['fp'] == null
+          ? null
+          : FP.fromJson(json['fp'] as Map<String, dynamic>),
+      (json['fpCalification'] as num?)?.toDouble(),
       json['token'] as String?,
     );
 
@@ -31,5 +36,8 @@ Map<String, dynamic> _$UserToJson(User instance) => <String, dynamic>{
       'provinceId': instance.provinceId,
       'province': instance.province,
       'city': instance.city,
+      'fpId': instance.fpId,
+      'fp': instance.fp,
+      'fpCalification': instance.fpCalification,
       'token': instance.token,
     };
