@@ -10,8 +10,8 @@ class User {
       this.id,
       this.email,
       this.name,
-      this.lastname,
-      this.birthdate,
+      this.lastName,
+      this.birthDate,
       this.provinceId,
       this.province,
       this.city,
@@ -23,8 +23,8 @@ class User {
   int? id;
   String? email;
   String? name;
-  String? lastname;
-  DateTime? birthdate;
+  String? lastName;
+  DateTime? birthDate;
   int? provinceId;
   Province? province;
   String? city;

@@ -1,6 +1,7 @@
 import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
 import 'package:practicejob/app_constants.dart';
+import 'package:practicejob/src/routes/app_routes.dart';
 import 'package:practicejob/src/services/auth_service.dart';
 
 class HomePage extends StatefulWidget {
@@ -15,46 +16,77 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
-  final TextStyle homeTextStyle = const TextStyle(
-      height: 5,
-      fontSize: 38,
-      color: Colors.black,
-      backgroundColor: cPrimaryLightColor);
   final _authService = AuthService();
+  final tabsItems = const <BottomNavigationBarItem>[
+    BottomNavigationBarItem(
+      icon: Icon(Icons.search),
+      label: 'Search',
+    ),
+    BottomNavigationBarItem(
+      icon: Icon(Icons.archive),
+      label: 'My offers',
+    ),
+    BottomNavigationBarItem(
+      icon: Icon(Icons.person),
+      label: 'Profile',
+    ),
+  ];
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text('Home Page'),
+    Size size = MediaQuery.of(context).size;
+    return AutoTabsScaffold(
+      appBarBuilder: (_, tabsRouter) => AppBar(
         backgroundColor: cPrimaryColor,
-        elevation: 1,
-        automaticallyImplyLeading: false,
-      ),
-      body: Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.start,
-          children: <Widget>[
-            Text('Bienvenido!', style: homeTextStyle),
-            Container(
-              margin: const EdgeInsets.symmetric(vertical: 10),
-              padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 5),
-              decoration: BoxDecoration(
-                color: cPrimaryColor,
-                borderRadius: BorderRadius.circular(29),
-              ),
-              child: TextButton(
-                onPressed: () async {
-                  _authService.logout();
-                  context.router.replaceNamed('/');
-                },
-                style: TextButton.styleFrom(primary: Colors.white),
-                child: const Text("LOG OUT"),
-              ),
-            ),
-          ],
+        title: Text(getCurrentTabIndexLabel(tabsRouter.activeIndex)),
+        centerTitle: true,
+        toolbarHeight: size.height / 12,
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.vertical(
+            bottom: Radius.elliptical(size.width, 20.0),
+          ),
         ),
+        actions: getCurrentActions(tabsRouter.activeIndex),
+        elevation: 0,
+        leading: const AutoBackButton(),
       ),
+      routes: const [
+        SettingsPageRoute(),
+        SettingsPageRoute(),
+        ProfilePageRoute(),
+      ],
+      bottomNavigationBuilder: (_, tabsRouter) {
+        return customBottomNavigationBar(tabsRouter);
+      },
     );
+  }
+
+  BottomNavigationBar customBottomNavigationBar(tabsRouter) {
+    return BottomNavigationBar(
+      currentIndex: tabsRouter.activeIndex,
+      onTap: tabsRouter.setActiveIndex,
+      backgroundColor: cPrimaryLightColor,
+      items: tabsItems,
+    );
+  }
+
+  getCurrentTabIndexLabel(activeIndex) {
+    return tabsItems[activeIndex].label;
+  }
+
+  List<Widget>? getCurrentActions(activeIndex) {
+    if (getCurrentTabIndexLabel(activeIndex) == 'Profile') {
+      return [
+        IconButton(
+            icon: const Icon(Icons.logout_rounded),
+            onPressed: () async {
+              _authService.logout();
+              context.router.removeLast();
+              context.router.replaceNamed('/');
+            }),
+      ];
+    } else {
+      return [];
+    }
   }
 }

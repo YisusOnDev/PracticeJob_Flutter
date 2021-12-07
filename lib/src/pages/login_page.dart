@@ -104,14 +104,7 @@ class _LoginPageState extends State<LoginPage> {
                 'required': 'The email must not be empty',
                 'email': 'The email value must be a valid email'
               },
-              decoration: const InputDecoration(
-                hintText: "Email",
-                icon: Icon(
-                  Icons.person,
-                  color: cPrimaryColor,
-                ),
-                border: InputBorder.none,
-              ),
+              decoration: Util.formDecoration(Icons.person, 'Email'),
             ),
           ),
           TextFieldContainer(
@@ -121,14 +114,7 @@ class _LoginPageState extends State<LoginPage> {
               validationMessages: (control) => {
                 'required': 'The password must not be empty',
               },
-              decoration: const InputDecoration(
-                hintText: "Password",
-                icon: Icon(
-                  Icons.lock,
-                  color: cPrimaryColor,
-                ),
-                border: InputBorder.none,
-              ),
+              decoration: Util.formDecoration(Icons.lock, 'Password'),
             ),
           ),
           Container(
@@ -163,8 +149,10 @@ class _LoginPageState extends State<LoginPage> {
         await _authService.saveDataToStorage(res.body);
 
         if (jsonDecode(res.body)['data']['name'] == null) {
+          context.router.removeLast();
           context.router.replaceNamed('/completeprofile');
         } else {
+          context.router.removeLast();
           context.router.replaceNamed('/home');
         }
       } else {

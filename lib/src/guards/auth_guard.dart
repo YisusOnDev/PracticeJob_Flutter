@@ -9,11 +9,11 @@ class AuthGuard extends AutoRouteGuard {
   Future<void> onNavigation(
       NavigationResolver resolver, StackRouter router) async {
     final isAuthenticated = await _authService.isAuthenticated();
-    print("auth? " + isAuthenticated.toString());
-    if (!isAuthenticated) {
-      router.pushAndPopUntil(WelcomePageRoute(), predicate: (_) => false);
+    if (isAuthenticated) {
+      resolver.next(true);
     } else {
-      resolver.next();
+      router.push(WelcomePageRoute());
+      resolver.next(true);
     }
   }
 }

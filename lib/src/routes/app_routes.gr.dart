@@ -52,7 +52,18 @@ class _$AppRouter extends RootStackRouter {
           orElse: () => const CompleteProfilePageRouteArgs());
       return AdaptivePage<dynamic>(
           routeData: routeData,
-          child: CompleteProfilePage(key: args.key, title: args.title));
+          child: CompleteProfilePage(
+              key: args.key,
+              title: args.title,
+              fromSettings: args.fromSettings));
+    },
+    SettingsPageRoute.name: (routeData) {
+      return AdaptivePage<dynamic>(
+          routeData: routeData, child: const SettingsPage());
+    },
+    ProfilePageRoute.name: (routeData) {
+      return AdaptivePage<dynamic>(
+          routeData: routeData, child: const ProfilePage());
     }
   };
 
@@ -63,7 +74,24 @@ class _$AppRouter extends RootStackRouter {
         RouteConfig(WelcomePageRoute.name, path: '/welcome'),
         RouteConfig(LoginPageRoute.name, path: '/login'),
         RouteConfig(SignUpPageRoute.name, path: '/signup'),
-        RouteConfig(HomePageRoute.name, path: '/home', guards: [authGuard]),
+        RouteConfig(HomePageRoute.name, path: '/home', guards: [
+          authGuard
+        ], children: [
+          RouteConfig('#redirect',
+              path: '',
+              parent: HomePageRoute.name,
+              redirectTo: 'settings',
+              fullMatch: true),
+          RouteConfig(SettingsPageRoute.name,
+              path: 'settings', parent: HomePageRoute.name),
+          RouteConfig(ProfilePageRoute.name,
+              path: 'profile', parent: HomePageRoute.name),
+          RouteConfig('*#redirect',
+              path: '*',
+              parent: HomePageRoute.name,
+              redirectTo: '',
+              fullMatch: true)
+        ]),
         RouteConfig(CompleteProfilePageRoute.name,
             path: '/completeprofile', guards: [authGuard]),
         RouteConfig('*#redirect', path: '*', redirectTo: '/', fullMatch: true)
@@ -139,9 +167,11 @@ class SignUpPageRouteArgs {
 
 /// generated route for [HomePage]
 class HomePageRoute extends PageRouteInfo<HomePageRouteArgs> {
-  HomePageRoute({Key? key, String? title})
+  HomePageRoute({Key? key, String? title, List<PageRouteInfo>? children})
       : super(name,
-            path: '/home', args: HomePageRouteArgs(key: key, title: title));
+            path: '/home',
+            args: HomePageRouteArgs(key: key, title: title),
+            initialChildren: children);
 
   static const String name = 'HomePageRoute';
 }
@@ -162,23 +192,40 @@ class HomePageRouteArgs {
 /// generated route for [CompleteProfilePage]
 class CompleteProfilePageRoute
     extends PageRouteInfo<CompleteProfilePageRouteArgs> {
-  CompleteProfilePageRoute({Key? key, String? title})
+  CompleteProfilePageRoute({Key? key, String? title, dynamic fromSettings})
       : super(name,
             path: '/completeprofile',
-            args: CompleteProfilePageRouteArgs(key: key, title: title));
+            args: CompleteProfilePageRouteArgs(
+                key: key, title: title, fromSettings: fromSettings));
 
   static const String name = 'CompleteProfilePageRoute';
 }
 
 class CompleteProfilePageRouteArgs {
-  const CompleteProfilePageRouteArgs({this.key, this.title});
+  const CompleteProfilePageRouteArgs({this.key, this.title, this.fromSettings});
 
   final Key? key;
 
   final String? title;
 
+  final dynamic fromSettings;
+
   @override
   String toString() {
-    return 'CompleteProfilePageRouteArgs{key: $key, title: $title}';
+    return 'CompleteProfilePageRouteArgs{key: $key, title: $title, fromSettings: $fromSettings}';
   }
+}
+
+/// generated route for [SettingsPage]
+class SettingsPageRoute extends PageRouteInfo<void> {
+  const SettingsPageRoute() : super(name, path: 'settings');
+
+  static const String name = 'SettingsPageRoute';
+}
+
+/// generated route for [ProfilePage]
+class ProfilePageRoute extends PageRouteInfo<void> {
+  const ProfilePageRoute() : super(name, path: 'profile');
+
+  static const String name = 'ProfilePageRoute';
 }

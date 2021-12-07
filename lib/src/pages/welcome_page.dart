@@ -2,7 +2,10 @@ import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:practicejob/app_constants.dart';
+import 'package:practicejob/src/models/user.dart';
 import 'package:practicejob/src/services/auth_service.dart';
+
+final AuthService _authService = AuthService();
 
 class WelcomePage extends StatelessWidget {
   const WelcomePage({Key? key, this.title}) : super(key: key);
@@ -11,12 +14,17 @@ class WelcomePage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return FutureBuilder<bool>(
-      future: AuthService().isAuthenticated(),
-      initialData: false,
+    return FutureBuilder<String>(
+      future: userCompletedProfile(),
+      initialData: '',
       builder: (BuildContext context, AsyncSnapshot snapshot) {
-        if (snapshot.hasData && snapshot.data == true) {
-          context.router.replaceNamed('/home');
+        if (snapshot.hasData) {
+          String result = snapshot.data;
+          if (result == 'home') {
+            context.router.replaceNamed('/home');
+          } else if (result == 'completeprofile') {
+            context.router.replaceNamed('/completeprofile');
+          }
         }
         return buildWelcomePage(context);
       },
@@ -87,4 +95,19 @@ class WelcomePage extends StatelessWidget {
           ])),
     );
   }
+}
+
+Future<String> userCompletedProfile() async {
+  User? u = await _authService.readFromStorage();
+  bool authenticated = await _authService.isAuthenticated();
+  if (authenticated == true) {
+    if (u != null && u.token != null) {
+      if (u.name != null) {
+        return 'home';
+      } else {
+        return 'completeprofile';
+      }
+    }
+  }
+  return 'needlogin';
 }

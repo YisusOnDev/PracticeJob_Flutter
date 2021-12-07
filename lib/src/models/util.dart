@@ -29,7 +29,7 @@ class Util {
     );
   }
 
-  static ValidatorFunction mustMatch(
+  static ValidatorFunction mustMatchValidator(
       String controlName, String matchingControlName) {
     return (AbstractControl<dynamic> control) {
       final form = control as FormGroup;
@@ -39,8 +39,6 @@ class Util {
 
       if (formControl.value != matchingFormControl.value) {
         matchingFormControl.setErrors({'mustMatch': true});
-
-        // force messages to show up as soon as possible
         matchingFormControl.markAsTouched();
       } else {
         matchingFormControl.removeError('mustMatch');
@@ -48,5 +46,28 @@ class Util {
 
       return null;
     };
+  }
+
+  static InputDecoration formDecoration(IconData icon, label) {
+    return InputDecoration(
+      labelText: label,
+      icon: Icon(icon, color: cPrimaryColor),
+      border: InputBorder.none,
+    );
+  }
+
+  static int getAgeFromDate(DateTime birthdate) {
+    DateTime birthDate = birthdate;
+    DateTime today = DateTime.now();
+    return today.year - birthDate.year;
+  }
+
+  static void rebuildAllChildren(BuildContext context) {
+    void rebuild(Element el) {
+      el.markNeedsBuild();
+      el.visitChildren(rebuild);
+    }
+
+    (context as Element).visitChildren(rebuild);
   }
 }

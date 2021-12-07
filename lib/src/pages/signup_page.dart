@@ -30,7 +30,7 @@ class _SignUpPageState extends State<SignUpPage> {
     'passwordConfirmation': FormControl<String>(),
   }, validators: [
     Validators.required,
-    Util.mustMatch('password', 'passwordConfirmation')
+    Util.mustMatchValidator('password', 'passwordConfirmation')
   ]);
 
   @override
@@ -175,6 +175,7 @@ class _SignUpPageState extends State<SignUpPage> {
       final res = await _authService.register(_email, _password);
       if (res.statusCode == 200) {
         await _authService.saveDataToStorage(res.body);
+        context.router.removeLast();
         context.router.replaceNamed('/completeprofile');
       } else {
         Util.showMyDialog(
