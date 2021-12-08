@@ -334,12 +334,14 @@ class _CompleteProfilePageState extends State<CompleteProfilePage> {
   }
 
   List<DropdownMenuItem<FP>> getFpList() {
+    final FPGrade? gradeFilter = profileForm.control('fpgrade').value;
     final FPFamily? familyFilter = profileForm.control('fpfamily').value;
     final List<DropdownMenuItem<FP>> dropdownFpList = [];
     final List<FP> fpFilteredList = [];
-    if (familyFilter != null) {
+    if (familyFilter != null && gradeFilter != null) {
       for (FP f in fpList) {
-        if (f.fpFamily.id == familyFilter.id) {
+        if (f.fpGrade.id == gradeFilter.id &&
+            f.fpFamily.id == familyFilter.id) {
           if (!fpItemAlreadyExist(fpFilteredList, f)) {
             fpFilteredList.add(f);
             dropdownFpList.add(DropdownMenuItem(child: Text(f.name), value: f));
