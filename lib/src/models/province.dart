@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'dart:ui';
 
 import 'package:json_annotation/json_annotation.dart';
 part 'province.g.dart';
@@ -13,6 +14,12 @@ class Province {
   factory Province.fromJson(Map<String, dynamic> json) =>
       _$ProvinceFromJson(json);
   Map<String, dynamic> toJson() => _$ProvinceToJson(this);
+
+  @override
+  bool operator ==(Object other) => other is Province && id == other.id;
+
+  @override
+  int get hashCode => hashValues(id, id);
 }
 
 List<Province> provinceListFromJson(String pData) {
