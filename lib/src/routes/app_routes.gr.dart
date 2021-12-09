@@ -55,6 +55,7 @@ class _$AppRouter extends RootStackRouter {
           child: CompleteProfilePage(
               key: args.key,
               title: args.title,
+              userData: args.userData,
               fromSettings: args.fromSettings));
     },
     SettingsPageRoute.name: (routeData) {
@@ -192,27 +193,34 @@ class HomePageRouteArgs {
 /// generated route for [CompleteProfilePage]
 class CompleteProfilePageRoute
     extends PageRouteInfo<CompleteProfilePageRouteArgs> {
-  CompleteProfilePageRoute({Key? key, String? title, dynamic fromSettings})
+  CompleteProfilePageRoute(
+      {Key? key, String? title, User? userData, dynamic fromSettings})
       : super(name,
             path: '/completeprofile',
             args: CompleteProfilePageRouteArgs(
-                key: key, title: title, fromSettings: fromSettings));
+                key: key,
+                title: title,
+                userData: userData,
+                fromSettings: fromSettings));
 
   static const String name = 'CompleteProfilePageRoute';
 }
 
 class CompleteProfilePageRouteArgs {
-  const CompleteProfilePageRouteArgs({this.key, this.title, this.fromSettings});
+  const CompleteProfilePageRouteArgs(
+      {this.key, this.title, this.userData, this.fromSettings});
 
   final Key? key;
 
   final String? title;
 
+  final User? userData;
+
   final dynamic fromSettings;
 
   @override
   String toString() {
-    return 'CompleteProfilePageRouteArgs{key: $key, title: $title, fromSettings: $fromSettings}';
+    return 'CompleteProfilePageRouteArgs{key: $key, title: $title, userData: $userData, fromSettings: $fromSettings}';
   }
 }
 

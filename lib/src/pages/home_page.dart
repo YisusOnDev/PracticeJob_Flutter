@@ -20,15 +20,15 @@ class _HomePageState extends State<HomePage> {
   final tabsItems = const <BottomNavigationBarItem>[
     BottomNavigationBarItem(
       icon: Icon(Icons.search),
-      label: 'Search',
+      label: 'Buscar',
     ),
     BottomNavigationBarItem(
       icon: Icon(Icons.archive),
-      label: 'My offers',
+      label: 'Mis ofertas',
     ),
     BottomNavigationBarItem(
       icon: Icon(Icons.person),
-      label: 'Profile',
+      label: 'Mi perfil',
     ),
   ];
 

@@ -60,7 +60,7 @@ class WelcomePage extends StatelessWidget {
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: <Widget>[
                   const Text(
-                    "WELCOME TO PRACTICEJOB",
+                    "BIENVENIDO A PRACTICEJOB",
                     style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
                   ),
                   SizedBox(height: size.height * 0.05),
@@ -78,7 +78,7 @@ class WelcomePage extends StatelessWidget {
                           borderRadius: BorderRadius.circular(29.0),
                         ),
                       ),
-                      child: const Text('LOG IN')),
+                      child: const Text('INICIAR SESIÓN')),
                   ElevatedButton(
                       onPressed: () => router.pushNamed('/signup'),
                       style: ElevatedButton.styleFrom(
@@ -88,7 +88,7 @@ class WelcomePage extends StatelessWidget {
                           borderRadius: BorderRadius.circular(29.0),
                         ),
                       ),
-                      child: const Text('CREATE ACCOUNT')),
+                      child: const Text('CREAR CUENTA')),
                 ],
               ),
             ),

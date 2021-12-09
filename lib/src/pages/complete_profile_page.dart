@@ -22,10 +22,11 @@ import 'package:reactive_forms/reactive_forms.dart';
 class CompleteProfilePage extends StatefulWidget {
   static var pageName = 'CompleteProfilePage';
 
-  const CompleteProfilePage({Key? key, this.title, fromSettings})
+  const CompleteProfilePage({Key? key, this.title, this.userData, fromSettings})
       : super(key: key);
 
   final String? title;
+  final User? userData;
 
   @override
   _CompleteProfilePageState createState() => _CompleteProfilePageState();
@@ -44,7 +45,8 @@ class _CompleteProfilePageState extends State<CompleteProfilePage> {
   final profileForm = FormGroup({
     'name': FormControl<String>(validators: [Validators.required]),
     'surname': FormControl<String>(validators: [Validators.required]),
-    'birthdate': FormControl<DateTime>(validators: [Validators.required]),
+    'birthdate': FormControl<DateTime>(
+        validators: [Validators.required, Util.is16YearsOldValidator()]),
     'province': FormControl<Province>(validators: [Validators.required]),
     'city': FormControl<String>(validators: [Validators.required]),
     'fpgrade': FormControl<FPGrade>(validators: [Validators.required]),
@@ -53,7 +55,7 @@ class _CompleteProfilePageState extends State<CompleteProfilePage> {
     'calification': FormControl<double>(
       validators: [
         Validators.required,
-        Validators.min(0.0),
+        Validators.min(5.0),
         Validators.max(10.0)
       ],
     )
@@ -63,10 +65,15 @@ class _CompleteProfilePageState extends State<CompleteProfilePage> {
 
   @override
   Widget build(BuildContext context) {
+    WidgetsBinding.instance?.addPostFrameCallback((_) {
+      if (widget.userData != null) {
+        _fillForm(widget.userData);
+      }
+    });
     Size size = MediaQuery.of(context).size;
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Complete your profile'),
+        title: Text(_getAppBarTitle(widget.title)),
         centerTitle: true,
         toolbarHeight: size.height / 12,
         shape: RoundedRectangleBorder(
@@ -99,7 +106,7 @@ class _CompleteProfilePageState extends State<CompleteProfilePage> {
                     });
                   } else {
                     Util.showMyDialog(
-                        context, "Error", "Please, select an image.");
+                        context, "Error", "Por favor, selecciona una imagen");
                   }
                 },
               ),
@@ -112,6 +119,26 @@ class _CompleteProfilePageState extends State<CompleteProfilePage> {
         ),
       ),
     );
+  }
+
+  _getAppBarTitle(title) {
+    if (title != null) {
+      return title;
+    } else {
+      return 'Completa tu perfil';
+    }
+  }
+
+  _fillForm(user) {
+    profileForm.control('name').value = user.name;
+    profileForm.control('surname').value = user.lastName;
+    profileForm.control('birthdate').value = user.birthDate;
+    profileForm.control('province').value = user.province;
+    profileForm.control('city').value = user.city;
+    profileForm.control('fpgrade').value = user.fp?.fpGrade;
+    profileForm.control('fpfamily').value = user.fp?.fpFamily;
+    profileForm.control('fpname').value = user.fp;
+    profileForm.control('calification').value = user.fpCalification;
   }
 
   Widget buildCompleteProfileForm() {
@@ -134,35 +161,30 @@ class _CompleteProfilePageState extends State<CompleteProfilePage> {
                     child: ReactiveTextField(
                       formControlName: 'name',
                       validationMessages: (control) => {
-                        'required': 'The name field must not be empty',
+                        'required': 'El nombre no puede estar vacio',
                       },
-                      decoration: Util.formDecoration(Icons.person, 'Surname'),
+                      decoration: Util.formDecoration(Icons.person, 'Nombre'),
                     ),
                   ),
                   TextFieldContainer(
                       child: ReactiveTextField(
                     formControlName: 'surname',
                     validationMessages: (control) => {
-                      'required': 'The surname field must not be empty',
+                      'required': 'Los apellidos no pueden estar vacios',
                     },
                     decoration:
-                        Util.formDecoration(Icons.person_add, 'Surname'),
+                        Util.formDecoration(Icons.person_add, 'Apellidos'),
                   )),
                   TextFieldContainer(
                       child: ReactiveDateTimePicker(
+                    lastDate: DateTime.now(),
                     formControlName: 'birthdate',
                     validationMessages: (control) => {
-                      'required': 'The birthdate field must not be empty',
+                      'required': 'La fecha de nacimiento no puede estar vacía',
+                      'minAge': 'Tienes que tener 16 años como mínimo'
                     },
-                    decoration: Util.formDecoration(Icons.cake, 'Birthdate'),
-                  )),
-                  TextFieldContainer(
-                      child: ReactiveTextField(
-                    formControlName: 'city',
-                    validationMessages: (control) => {
-                      'required': 'The city field must not be empty',
-                    },
-                    decoration: Util.formDecoration(Icons.apartment, 'City'),
+                    decoration:
+                        Util.formDecoration(Icons.cake, 'Fecha de nacimiento'),
                   )),
                   FutureBuilder(
                     future: _provinceService.getAll(),
@@ -174,10 +196,10 @@ class _CompleteProfilePageState extends State<CompleteProfilePage> {
                           formControlName: 'province',
                           isExpanded: true,
                           validationMessages: (control) => {
-                            'required': 'The province field must not be empty',
+                            'required': 'La provincia no puede estar vacía',
                           },
                           decoration: Util.formDecoration(
-                              Icons.location_city_rounded, 'Province'),
+                              Icons.location_city_rounded, 'Provincia'),
                           items: getProvinceList(snapshot.data),
                         ));
                       } else {
@@ -186,15 +208,24 @@ class _CompleteProfilePageState extends State<CompleteProfilePage> {
                     },
                   ),
                   TextFieldContainer(
+                      child: ReactiveTextField(
+                    formControlName: 'city',
+                    validationMessages: (control) => {
+                      'required': 'La ciudad no puede estar vacía',
+                    },
+                    decoration: Util.formDecoration(Icons.apartment, 'Ciudad'),
+                  )),
+
+                  TextFieldContainer(
                       child: ReactiveDropdownField<FPGrade>(
                     formControlName: 'fpgrade',
                     isExpanded: true,
                     validationMessages: (control) => {
-                      'required': 'The FP Grade field must not be empty',
+                      'required': 'El grado no puede estar vacío',
                     },
                     decoration: Util.formDecoration(
                       Icons.grade,
-                      'FP Grade',
+                      'Grado (FP)',
                     ),
                     items: getFpGradeList(),
                   )),
@@ -206,11 +237,11 @@ class _CompleteProfilePageState extends State<CompleteProfilePage> {
                         formControlName: 'fpfamily',
                         isExpanded: true,
                         validationMessages: (control) => {
-                          'required': 'The FP Family field must not be empty',
+                          'required': 'La familia no puede estar vacía',
                         },
                         decoration: Util.formDecoration(
                           Icons.history_edu,
-                          'FP Family',
+                          'Familia (FP)',
                         ),
                         items: getFpFamilyList(),
                       ));
@@ -224,11 +255,11 @@ class _CompleteProfilePageState extends State<CompleteProfilePage> {
                         formControlName: 'fpname',
                         isExpanded: true,
                         validationMessages: (control) => {
-                          'required': 'The FP Name field must not be empty',
+                          'required': 'El título no puede estar vacío',
                         },
                         decoration: Util.formDecoration(
                           Icons.school,
-                          'FP Name',
+                          'Título (FP)',
                         ),
                         items: getFpList(),
                       ));
@@ -239,14 +270,13 @@ class _CompleteProfilePageState extends State<CompleteProfilePage> {
                     formControlName: 'calification',
                     keyboardType: TextInputType.number,
                     validationMessages: (control) => {
-                      'required': 'The FP Calification field must not be empty',
-                      'min':
-                          'The FP Calification field must be greater than 0.0',
-                      'max': 'The FP Calification field must be less than 10.0',
+                      'required': 'La nota media no puede estar vacía',
+                      'min': 'El mínimo es 5',
+                      'max': 'El máximo es 10',
                     },
                     decoration: Util.formDecoration(
                       Icons.format_list_numbered,
-                      'FP Calification (0-10)',
+                      'Nota media (FP)',
                     ),
                   )),
                   //
@@ -262,7 +292,7 @@ class _CompleteProfilePageState extends State<CompleteProfilePage> {
                     child: TextButton(
                       onPressed: () => doTrySaveProfile(),
                       style: TextButton.styleFrom(primary: Colors.white),
-                      child: const Text("SAVE PROFILE"),
+                      child: const Text("GUARDAR PERFIL"),
                     ),
                   ),
                 ],
@@ -392,16 +422,21 @@ class _CompleteProfilePageState extends State<CompleteProfilePage> {
             context.router.replaceNamed('/home');
           } else {
             Util.showMyDialog(context, "Error",
-                "Your profile couldn't be saved, if this happens again contact an Administrator.");
+                "Tu perfil no se ha podido guardar correctamente, si el error persiste contacte con un Administrador.");
           }
         } on TimeoutException catch (_) {
-          Util.showMyDialog(
-              context, "Error", "An error has occurred, please try again.");
+          Util.showMyDialog(context, "Error",
+              "Ha ocurrido un error, por favor, intentelo de nuevo más tarde.");
         }
       } else {
-        Util.showMyDialog(context, "Error", "Your session has expired.");
+        Util.showMyDialog(context, "Error", "Tu sesión ha expirado.");
         context.router.replaceNamed('/');
       }
+      Util.rebuildAllChildren(context);
+    } else {
+      profileForm.markAllAsTouched();
+      Util.showMyDialog(
+          context, "Error", "Por favor rellena todos los campos requeridos.");
     }
   }
 }

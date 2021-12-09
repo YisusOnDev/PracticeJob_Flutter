@@ -67,7 +67,7 @@ class _LoginPageState extends State<LoginPage> {
               mainAxisAlignment: MainAxisAlignment.center,
               children: <Widget>[
                 const Text(
-                  "LOG IN",
+                  "INICIO DE SESIÓN",
                   style: TextStyle(
                       fontWeight: FontWeight.bold, color: cPrimaryColor),
                 ),
@@ -81,7 +81,7 @@ class _LoginPageState extends State<LoginPage> {
                 TextButton(
                     onPressed: () => context.router.pushNamed('/signup'),
                     style: TextButton.styleFrom(primary: cPrimaryColor),
-                    child: const Text("Don't have an account yet?")),
+                    child: const Text("¿No tienes cuenta aún?")),
               ],
             ),
           ),
@@ -101,10 +101,11 @@ class _LoginPageState extends State<LoginPage> {
               keyboardType: TextInputType.emailAddress,
               formControlName: 'email',
               validationMessages: (control) => {
-                'required': 'The email must not be empty',
-                'email': 'The email value must be a valid email'
+                'required': 'El correo no puede estar vacío',
+                'email': 'El correo debe ser válido'
               },
-              decoration: Util.formDecoration(Icons.person, 'Email'),
+              decoration:
+                  Util.formDecoration(Icons.person, 'Correo electrónico'),
             ),
           ),
           TextFieldContainer(
@@ -112,9 +113,9 @@ class _LoginPageState extends State<LoginPage> {
               formControlName: 'password',
               obscureText: true,
               validationMessages: (control) => {
-                'required': 'The password must not be empty',
+                'required': 'La contraseña no puede estar vacía',
               },
-              decoration: Util.formDecoration(Icons.lock, 'Password'),
+              decoration: Util.formDecoration(Icons.lock, 'Contraseña'),
             ),
           ),
           Container(
@@ -132,7 +133,7 @@ class _LoginPageState extends State<LoginPage> {
                 }
               },
               style: TextButton.styleFrom(primary: Colors.white),
-              child: const Text("LOG IN"),
+              child: const Text("INICIAR SESIÓN"),
             ),
           ),
         ],
@@ -156,11 +157,11 @@ class _LoginPageState extends State<LoginPage> {
           context.router.replaceNamed('/home');
         }
       } else {
-        Util.showMyDialog(context, "Error", "Invalid credentials.");
+        Util.showMyDialog(context, "Error", "Credenciales inválidas.");
       }
     } on TimeoutException catch (_) {
-      Util.showMyDialog(
-          context, "Error", "An error has occurred, please try again.");
+      Util.showMyDialog(context, "Error",
+          "Ha ocurrido un error, por favor, intentelo más tarde.");
     }
   }
 }

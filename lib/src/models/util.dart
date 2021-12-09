@@ -17,8 +17,8 @@ class Util {
           ),
           actions: <Widget>[
             TextButton(
-              child:
-                  const Text('Dismiss', style: TextStyle(color: cPrimaryColor)),
+              child: const Text('Cerrar',
+                  style: TextStyle(color: cPrimaryColor, fontSize: 18)),
               onPressed: () {
                 Navigator.of(context).pop();
               },
@@ -45,6 +45,23 @@ class Util {
       }
 
       return null;
+    };
+  }
+
+  static ValidatorFunction is16YearsOldValidator() {
+    return (AbstractControl<dynamic> control) {
+      final FormControl<DateTime> formField = control as FormControl<DateTime>;
+
+      final DateTime? value = formField.value;
+      if (value != null) {
+        if (getAgeFromDate(value) < 16) {
+          formField.setErrors({'minAge': true});
+          formField.markAsTouched();
+          return {'minAge': true};
+        }
+      } else {
+        return null;
+      }
     };
   }
 

@@ -64,7 +64,7 @@ class _SignUpPageState extends State<SignUpPage> {
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: <Widget>[
                   const Text(
-                    "SIGN UP",
+                    "REGISTRO",
                     style: TextStyle(fontWeight: FontWeight.bold),
                   ),
                   SizedBox(height: size.height * 0.03),
@@ -76,7 +76,7 @@ class _SignUpPageState extends State<SignUpPage> {
                   TextButton(
                       onPressed: () => context.router.pushNamed('/login'),
                       style: TextButton.styleFrom(primary: cPrimaryColor),
-                      child: const Text("Have an account?")),
+                      child: const Text("¿Ya tienes una cuenta?")),
                 ],
               ),
             ),
@@ -97,11 +97,11 @@ class _SignUpPageState extends State<SignUpPage> {
               keyboardType: TextInputType.emailAddress,
               formControlName: 'email',
               validationMessages: (control) => {
-                'required': 'The email must not be empty',
-                'email': 'The email value must be a valid email'
+                'required': 'El correo no puede estar vacío',
+                'email': 'El correo debe ser válido'
               },
               decoration: const InputDecoration(
-                hintText: "Email",
+                hintText: "Correo electrónico",
                 icon: Icon(
                   Icons.person,
                   color: cPrimaryColor,
@@ -115,10 +115,10 @@ class _SignUpPageState extends State<SignUpPage> {
               formControlName: 'password',
               obscureText: true,
               validationMessages: (control) => {
-                'required': 'The password must not be empty',
+                'required': 'La contraseña no puede estar vacía',
               },
               decoration: const InputDecoration(
-                hintText: "Password",
+                hintText: "Contraseña",
                 icon: Icon(
                   Icons.lock,
                   color: cPrimaryColor,
@@ -132,11 +132,11 @@ class _SignUpPageState extends State<SignUpPage> {
               formControlName: 'passwordConfirmation',
               obscureText: true,
               validationMessages: (control) => {
-                'required': 'The password must not be empty',
-                'mustMatch': 'Passwords must match'
+                'required': 'La contraseña no puede estar vacía',
+                'mustMatch': 'Las contraseñas deben coincidir'
               },
               decoration: const InputDecoration(
-                hintText: "Password confirmation",
+                hintText: "Confirmación de contraseña",
                 icon: Icon(
                   Icons.lock,
                   color: cPrimaryColor,
@@ -160,7 +160,7 @@ class _SignUpPageState extends State<SignUpPage> {
                 }
               },
               style: TextButton.styleFrom(primary: Colors.white),
-              child: const Text("SIGN UP"),
+              child: const Text("CREAR CUENTA"),
             ),
           ),
         ],
@@ -178,12 +178,12 @@ class _SignUpPageState extends State<SignUpPage> {
         context.router.removeLast();
         context.router.replaceNamed('/completeprofile');
       } else {
-        Util.showMyDialog(
-            context, "Error", "An account with this email already exists.");
+        Util.showMyDialog(context, "Error",
+            "Ya existe una cuenta con este correo electrónico.");
       }
     } on TimeoutException catch (_) {
-      Util.showMyDialog(
-          context, "Error", "An error has occurred, please try again.");
+      Util.showMyDialog(context, "Error",
+          "Ha ocurrido un error, por favor, intentelo de nuevo más tarde.");
     }
   }
 }

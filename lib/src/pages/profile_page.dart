@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:practicejob/src/components/profile_image.dart';
 import 'package:practicejob/src/models/user.dart';
 import 'package:practicejob/src/models/util.dart';
+import 'package:practicejob/src/routes/app_routes.dart';
 import 'package:practicejob/src/services/auth_service.dart';
 
 class ProfilePage extends StatefulWidget {
@@ -19,7 +20,6 @@ class _ProfilePageState extends State<ProfilePage> {
 
   @override
   Widget build(BuildContext context) {
-    Util.rebuildAllChildren(context);
     return FutureBuilder(
       future: _authService.readFromStorage(),
       initialData: null,
@@ -34,7 +34,8 @@ class _ProfilePageState extends State<ProfilePage> {
                   ProfileWidget(
                     imagePath: 'https://i.imgur.com/NEYyj2d.png',
                     onClicked: () {
-                      context.router.pushNamed('/completeprofile');
+                      context.router.push(CompleteProfilePageRoute(
+                          title: 'Editar perfil', userData: user));
                     },
                   ),
                   const SizedBox(height: 24),
@@ -71,17 +72,21 @@ class _ProfilePageState extends State<ProfilePage> {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Text(
-              user.fp!.name + ' (' + user.fpCalification.toString() + ')',
+              'Formación: ' +
+                  user.fp!.name +
+                  ' (' +
+                  user.fpCalification.toString() +
+                  ')',
               style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
             ),
             const SizedBox(height: 16),
             Text(
-              'From: ' + user.province!.name,
+              'De: ' + user.province!.name,
               style: const TextStyle(fontSize: 16, height: 1.4),
             ),
             const SizedBox(height: 16),
             Text(
-              'Age: ' + Util.getAgeFromDate(user.birthDate!).toString(),
+              'Edad: ' + Util.getAgeFromDate(user.birthDate!).toString(),
               style: const TextStyle(fontSize: 16, height: 1.4),
             ),
           ],
