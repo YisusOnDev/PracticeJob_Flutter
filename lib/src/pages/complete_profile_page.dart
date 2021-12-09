@@ -38,7 +38,6 @@ class _CompleteProfilePageState extends State<CompleteProfilePage> {
   final FPService _fpService = FPService();
 
   List<dynamic> fpList = [];
-  List<dynamic> provinceList = [];
 
   String dropdownValue = 'One';
 
@@ -46,7 +45,7 @@ class _CompleteProfilePageState extends State<CompleteProfilePage> {
     'name': FormControl<String>(validators: [Validators.required]),
     'surname': FormControl<String>(validators: [Validators.required]),
     'birthdate': FormControl<DateTime>(validators: [Validators.required]),
-    'province': FormControl<int>(validators: [Validators.required]),
+    'province': FormControl<Province>(validators: [Validators.required]),
     'city': FormControl<String>(validators: [Validators.required]),
     'fpgrade': FormControl<FPGrade>(validators: [Validators.required]),
     'fpfamily': FormControl<FPFamily>(validators: [Validators.required]),
@@ -170,9 +169,8 @@ class _CompleteProfilePageState extends State<CompleteProfilePage> {
                     initialData: const [],
                     builder: (BuildContext context, AsyncSnapshot snapshot) {
                       if (snapshot.hasData) {
-                        provinceList = snapshot.data;
                         return TextFieldContainer(
-                            child: ReactiveDropdownField<int>(
+                            child: ReactiveDropdownField<Province>(
                           formControlName: 'province',
                           isExpanded: true,
                           validationMessages: (control) => {
@@ -180,7 +178,7 @@ class _CompleteProfilePageState extends State<CompleteProfilePage> {
                           },
                           decoration: Util.formDecoration(
                               Icons.location_city_rounded, 'Province'),
-                          items: getProvinceListInt(snapshot.data),
+                          items: getProvinceList(snapshot.data),
                         ));
                       } else {
                         return const CircularProgressIndicator();
@@ -279,28 +277,11 @@ class _CompleteProfilePageState extends State<CompleteProfilePage> {
   }
 
   List<DropdownMenuItem<Province>> getProvinceList(data) {
-    final List<DropdownMenuItem<Province>> provinceDataList = [];
+    final List<DropdownMenuItem<Province>> provinceList = [];
     for (Province p in data) {
-      provinceDataList.add(DropdownMenuItem(child: Text(p.name), value: p));
+      provinceList.add(DropdownMenuItem(child: Text(p.name), value: p));
     }
-    return provinceDataList;
-  }
-
-  List<DropdownMenuItem<int>> getProvinceListInt(data) {
-    final List<DropdownMenuItem<int>> provinceInt = [];
-    for (Province p in data) {
-      provinceInt.add(DropdownMenuItem(child: Text(p.name), value: p.id));
-    }
-    return provinceInt;
-  }
-
-  getProvinceFromId(id) {
-    for (Province p in provinceList) {
-      if (p.id == id) {
-        return p;
-      }
-    }
-    return null;
+    return provinceList;
   }
 
   List<DropdownMenuItem<FPGrade>> getFpGradeList() {
@@ -387,8 +368,8 @@ class _CompleteProfilePageState extends State<CompleteProfilePage> {
         String name = profileForm.control('name').value;
         String surname = profileForm.control('surname').value;
         DateTime birthdate = profileForm.control('birthdate').value;
-        int provinceId = profileForm.control('province').value;
-        Province province = getProvinceFromId(provinceId);
+        Province province = profileForm.control('province').value;
+        int provinceId = province.id;
         String city = profileForm.control('city').value;
         FP fp = profileForm.control('fpname').value;
         int fpId = fp.id;
