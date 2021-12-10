@@ -2,11 +2,12 @@ import 'dart:async';
 import 'dart:io';
 
 import 'package:http/http.dart' as http;
+import 'package:practicejob/app_constants.dart';
 import 'package:practicejob/src/models/fp.dart';
 import 'package:practicejob/src/services/auth_service.dart';
 
 class FPService {
-  final baseUrl = 'http://10.0.2.2:5000';
+  final baseUrl = apiBaseUrl;
   final AuthService _authService = AuthService();
 
   Future<List<FP>> getAll() async {

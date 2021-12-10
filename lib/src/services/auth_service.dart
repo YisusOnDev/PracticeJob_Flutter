@@ -3,10 +3,11 @@ import 'dart:io';
 
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:http/http.dart' as http;
+import 'package:practicejob/app_constants.dart';
 import 'package:practicejob/src/models/user.dart';
 
 class AuthService {
-  final baseUrl = 'http://10.0.2.2:5000';
+  final baseUrl = apiBaseUrl;
   final storage = const FlutterSecureStorage();
 
   saveDataToStorage(data) async {

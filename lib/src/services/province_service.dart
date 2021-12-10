@@ -3,11 +3,12 @@ import 'dart:async';
 import 'dart:io';
 
 import 'package:http/http.dart' as http;
+import 'package:practicejob/app_constants.dart';
 import 'package:practicejob/src/models/province.dart';
 import 'package:practicejob/src/services/auth_service.dart';
 
 class ProvinceService {
-  final baseUrl = 'http://10.0.2.2:5000';
+  final baseUrl = apiBaseUrl;
   final AuthService _authService = AuthService();
 
   Future<List<Province>> getAll() async {
@@ -23,13 +24,12 @@ class ProvinceService {
       if (response.statusCode == 200) {
         return provinceListFromJson(response.body);
       } else if (response.statusCode == 401) {
-        _authService.getFirstPageRoute();
-        throw Exception('Session expired');
+        throw Exception('UNAUTHORIZED');
       } else {
-        throw Exception('Request failed');
+        throw Exception('BADREQUEST');
       }
     } on TimeoutException catch (_) {
-      throw TimeoutException('Request timeout');
+      throw TimeoutException('TIMEOUT');
     }
   }
 }
