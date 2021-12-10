@@ -300,7 +300,8 @@ class _CompleteProfilePageState extends State<CompleteProfilePage> {
             ),
           );
         } else {
-          return const CircularProgressIndicator();
+          //return const CircularProgressIndicator();
+          return Util.showLoadingDialog();
         }
       },
     );

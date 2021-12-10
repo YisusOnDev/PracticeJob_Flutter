@@ -29,6 +29,18 @@ class Util {
     );
   }
 
+  static showLoadingDialog() {
+    return SizedBox(
+      child: AlertDialog(
+        content: SingleChildScrollView(
+          child: ListBody(
+            children: const <Widget>[CircularProgressIndicator()],
+          ),
+        ),
+      ),
+    );
+  }
+
   static ValidatorFunction mustMatchValidator(
       String controlName, String matchingControlName) {
     return (AbstractControl<dynamic> control) {

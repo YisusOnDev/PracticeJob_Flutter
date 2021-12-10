@@ -2,10 +2,6 @@ import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:practicejob/app_constants.dart';
-import 'package:practicejob/src/models/user.dart';
-import 'package:practicejob/src/services/auth_service.dart';
-
-final AuthService _authService = AuthService();
 
 class WelcomePage extends StatelessWidget {
   const WelcomePage({Key? key, this.title}) : super(key: key);
@@ -14,26 +10,7 @@ class WelcomePage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return FutureBuilder<String>(
-      future: userCompletedProfile(),
-      initialData: '',
-      builder: (BuildContext context, AsyncSnapshot snapshot) {
-        if (snapshot.hasData) {
-          String result = snapshot.data;
-          if (result == 'home') {
-            context.router.replaceNamed('/home');
-          } else if (result == 'completeprofile') {
-            context.router.replaceNamed('/completeprofile');
-          }
-        }
-        return buildWelcomePage(context);
-      },
-    );
-  }
-
-  Widget buildWelcomePage(context) {
     Size size = MediaQuery.of(context).size;
-    final router = AutoRouter.of(context);
     return Scaffold(
       body: SizedBox(
           height: size.height,
@@ -70,7 +47,7 @@ class WelcomePage extends StatelessWidget {
                   ),
                   SizedBox(height: size.height * 0.05),
                   ElevatedButton(
-                      onPressed: () => router.pushNamed('/login'),
+                      onPressed: () => context.router.pushNamed('/login'),
                       style: ElevatedButton.styleFrom(
                         fixedSize: Size(size.width * 0.5, 25),
                         primary: cPrimaryColor,
@@ -80,7 +57,7 @@ class WelcomePage extends StatelessWidget {
                       ),
                       child: const Text('INICIAR SESIÓN')),
                   ElevatedButton(
-                      onPressed: () => router.pushNamed('/signup'),
+                      onPressed: () => context.router.pushNamed('/signup'),
                       style: ElevatedButton.styleFrom(
                         fixedSize: Size(size.width * 0.5, 25),
                         primary: cPrimaryColor,
@@ -95,19 +72,4 @@ class WelcomePage extends StatelessWidget {
           ])),
     );
   }
-}
-
-Future<String> userCompletedProfile() async {
-  User? u = await _authService.readFromStorage();
-  bool authenticated = await _authService.isAuthenticated();
-  if (authenticated == true) {
-    if (u != null && u.token != null) {
-      if (u.name != null) {
-        return 'home';
-      } else {
-        return 'completeprofile';
-      }
-    }
-  }
-  return 'needlogin';
 }

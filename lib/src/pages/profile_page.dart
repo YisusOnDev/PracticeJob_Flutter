@@ -18,6 +18,8 @@ class _ProfilePageState extends State<ProfilePage> {
   final AuthService _authService = AuthService();
   late User user;
 
+  bool isBusy = false;
+
   @override
   Widget build(BuildContext context) {
     return FutureBuilder(
@@ -34,8 +36,10 @@ class _ProfilePageState extends State<ProfilePage> {
                   ProfileWidget(
                     imagePath: 'https://i.imgur.com/NEYyj2d.png',
                     onClicked: () {
-                      context.router.push(CompleteProfilePageRoute(
-                          title: 'Editar perfil', userData: user));
+                      if (!isBusy) {
+                        context.router.push(CompleteProfilePageRoute(
+                            title: 'Editar perfil', userData: user));
+                      }
                     },
                   ),
                   const SizedBox(height: 24),
@@ -81,7 +85,7 @@ class _ProfilePageState extends State<ProfilePage> {
             ),
             const SizedBox(height: 16),
             Text(
-              'De: ' + user.province!.name,
+              'De: ' + user.city! + ', ' + user.province!.name,
               style: const TextStyle(fontSize: 16, height: 1.4),
             ),
             const SizedBox(height: 16),

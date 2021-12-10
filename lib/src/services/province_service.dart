@@ -22,6 +22,9 @@ class ProvinceService {
       }).timeout(const Duration(seconds: 15));
       if (response.statusCode == 200) {
         return provinceListFromJson(response.body);
+      } else if (response.statusCode == 401) {
+        _authService.getFirstPageRoute();
+        throw Exception('Session expired');
       } else {
         throw Exception('Request failed');
       }

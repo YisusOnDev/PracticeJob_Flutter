@@ -8,6 +8,7 @@ import 'package:practicejob/src/pages/login_page.dart';
 import 'package:practicejob/src/pages/profile_page.dart';
 import 'package:practicejob/src/pages/settings_page.dart';
 import 'package:practicejob/src/pages/signup_page.dart';
+import 'package:practicejob/src/pages/splashscreen_page.dart';
 import 'package:practicejob/src/pages/welcome_page.dart';
 
 part 'app_routes.gr.dart';
@@ -15,7 +16,8 @@ part 'app_routes.gr.dart';
 @AdaptiveAutoRouter(
   replaceInRouteName: 'Page,Route,Screen',
   routes: <AutoRoute>[
-    AutoRoute(path: '/welcome', page: WelcomePage, initial: true),
+    AutoRoute(path: '/', page: SplashScreen, initial: true),
+    AutoRoute(path: '/welcome', page: WelcomePage),
     AutoRoute(path: '/login', page: LoginPage),
     AutoRoute(path: '/signup', page: SignUpPage),
 

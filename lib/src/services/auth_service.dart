@@ -20,14 +20,12 @@ class AuthService {
       u = User.fromJson(body);
       u.token = await getCurrentToken();
     }
-
     return await storage.write(
         key: 'currentUser', value: jsonEncode(u.toJson()));
   }
 
   Future<User?> readFromStorage() async {
     String? storageData = await storage.read(key: 'currentUser');
-
     if (storageData != null) {
       final storageJson = jsonDecode(storageData);
       final User userObject = User.fromJson(storageJson);
@@ -48,17 +46,6 @@ class AuthService {
       return storageJson['token'];
     } else {
       return "nodata";
-    }
-  }
-
-  Future<bool> isAuthenticated() async {
-    String? storageData = await storage.read(key: 'currentUser');
-    if (storageData != null) {
-      final storageJson = jsonDecode(storageData);
-      // In futue we'll need to check if token is still valid and so...
-      return storageJson['token'] != null;
-    } else {
-      return false;
     }
   }
 
@@ -96,5 +83,43 @@ class AuthService {
           }),
         )
         .timeout(const Duration(seconds: 15));
+  }
+
+  Future<bool> isAuthorized() async {
+    var url = Uri.parse('$baseUrl/api/Student/Authorized');
+    User? u = await readFromStorage();
+    if (u != null) {
+      http.Response res = await http
+          .post(url,
+              headers: {
+                HttpHeaders.contentTypeHeader: 'application/json',
+                HttpHeaders.acceptHeader: 'application/json',
+                HttpHeaders.authorizationHeader:
+                    "Bearer " + await getCurrentToken(),
+              },
+              body: jsonEncode(u.toJson()))
+          .timeout(const Duration(seconds: 15));
+
+      if (res.statusCode == 200) {
+        await saveDataToStorage(res.body);
+        return true;
+      }
+    }
+    return false;
+  }
+
+  Future<String> getFirstPageRoute() async {
+    bool isAuthenticated = await isAuthorized();
+    if (isAuthenticated) {
+      User? user = await readFromStorage();
+      if (user != null && user.token != null) {
+        if (user.name != null) {
+          return '/home';
+        } else {
+          return '/completeprofile';
+        }
+      }
+    }
+    return '/welcome';
   }
 }
