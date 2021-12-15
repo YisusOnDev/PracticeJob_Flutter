@@ -12,7 +12,7 @@ class ProvinceService {
   final AuthService _authService = AuthService();
 
   Future<List<Province>> getAll() async {
-    var url = Uri.parse('$baseUrl/api/Province/GetAll');
+    var url = Uri.parse('$baseUrl/api/Province/All');
 
     try {
       final response = await http.get(url, headers: {

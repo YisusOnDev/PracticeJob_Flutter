@@ -50,8 +50,8 @@ class AuthService {
     }
   }
 
-  Future<http.Response> register(email, password) {
-    var url = Uri.parse('$baseUrl/api/Auth/Create');
+  Future<http.Response> login(email, password) {
+    var url = Uri.parse('$baseUrl/api/Auth/Login');
     return http
         .post(
           url,
@@ -68,8 +68,8 @@ class AuthService {
         .timeout(const Duration(seconds: 15));
   }
 
-  Future<http.Response> login(email, password) {
-    var url = Uri.parse('$baseUrl/api/Auth/Login');
+  Future<http.Response> register(email, password) {
+    var url = Uri.parse('$baseUrl/api/Auth/Create');
     return http
         .post(
           url,

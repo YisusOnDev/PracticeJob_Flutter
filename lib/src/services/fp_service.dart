@@ -11,7 +11,7 @@ class FPService {
   final AuthService _authService = AuthService();
 
   Future<List<FP>> getAll() async {
-    var url = Uri.parse('$baseUrl/api/FP/GetAll');
+    var url = Uri.parse('$baseUrl/api/FP/All');
 
     try {
       final response = await http.get(url, headers: {

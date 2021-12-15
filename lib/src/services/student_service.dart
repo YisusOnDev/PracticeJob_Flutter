@@ -10,10 +10,10 @@ class StudentService {
   final AuthService _authService = AuthService();
 
   Future<http.Response> update(userJson) async {
-    var url = Uri.parse('$baseUrl/api/Student/Update');
+    var url = Uri.parse('$baseUrl/api/Student');
 
     return http
-        .post(url,
+        .put(url,
             headers: {
               HttpHeaders.contentTypeHeader: 'application/json',
               HttpHeaders.acceptHeader: 'application/json',
