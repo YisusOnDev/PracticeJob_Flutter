@@ -33,14 +33,14 @@ class CompleteProfilePage extends StatefulWidget {
 }
 
 class _CompleteProfilePageState extends State<CompleteProfilePage> {
+  _CompleteProfilePageState();
+
   final StudentService _studentService = StudentService();
   final AuthService _authService = AuthService();
   final ProvinceService _provinceService = ProvinceService();
   final FPService _fpService = FPService();
 
   List<dynamic> fpList = [];
-
-  String dropdownValue = 'One';
 
   final profileForm = FormGroup({
     'name': FormControl<String>(validators: [Validators.required]),
@@ -64,12 +64,16 @@ class _CompleteProfilePageState extends State<CompleteProfilePage> {
   String _imagePath = "https://i.imgur.com/NEYyj2d.png";
 
   @override
+  initState() {
+    super.initState();
+
+    print("Super initState Call");
+
+    _fillForm(widget.userData);
+  }
+
+  @override
   Widget build(BuildContext context) {
-    WidgetsBinding.instance?.addPostFrameCallback((_) {
-      if (widget.userData != null) {
-        _fillForm(widget.userData);
-      }
-    });
     Size size = MediaQuery.of(context).size;
     return Scaffold(
       appBar: AppBar(
@@ -130,15 +134,15 @@ class _CompleteProfilePageState extends State<CompleteProfilePage> {
   }
 
   _fillForm(user) {
-    profileForm.control('name').value = user.name;
-    profileForm.control('surname').value = user.lastName;
-    profileForm.control('birthdate').value = user.birthDate;
-    profileForm.control('province').value = user.province;
-    profileForm.control('city').value = user.city;
-    profileForm.control('fpgrade').value = user.fp?.fpGrade;
-    profileForm.control('fpfamily').value = user.fp?.fpFamily;
-    profileForm.control('fpname').value = user.fp;
-    profileForm.control('calification').value = user.fpCalification;
+    profileForm.control('name').updateValue(user.name);
+    profileForm.control('surname').updateValue(user.lastName);
+    profileForm.control('birthdate').updateValue(user.birthDate);
+    profileForm.control('province').updateValue(user.province);
+    profileForm.control('city').updateValue(user.city);
+    profileForm.control('fpgrade').updateValue(user.fp?.fpGrade);
+    profileForm.control('fpfamily').updateValue(user.fp?.fpFamily);
+    profileForm.control('fpname').updateValue(user.fp);
+    profileForm.control('calification').updateValue(user.fpCalification);
   }
 
   Widget buildCompleteProfileForm() {
