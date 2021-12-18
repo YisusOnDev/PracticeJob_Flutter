@@ -66,9 +66,6 @@ class _CompleteProfilePageState extends State<CompleteProfilePage> {
   @override
   initState() {
     super.initState();
-
-    print("Super initState Call");
-
     _fillForm(widget.userData);
   }
 
