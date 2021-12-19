@@ -31,7 +31,6 @@ class JobDetailPage extends StatelessWidget {
         length: 2,
         child: Container(
           width: double.infinity,
-          // margin: EdgeInsets.only(top: 50.0),
           padding: const EdgeInsets.symmetric(horizontal: 18.0, vertical: 15.0),
           decoration: const BoxDecoration(
             color: Colors.white,
@@ -132,7 +131,7 @@ class JobDetailPage extends StatelessWidget {
                     DescriptionTab(offer: offer, type: "company"),
                   ],
                 ),
-              )
+              ),
             ],
           ),
         ),
@@ -142,19 +141,17 @@ class JobDetailPage extends StatelessWidget {
         child: Container(
           padding: const EdgeInsets.only(left: 18.0, bottom: 25.0, right: 18.0),
           color: Colors.white,
-          child: Expanded(
-            child: SizedBox(
-              height: 50.0,
-              child: ElevatedButton(
-                onPressed: () {},
-                style: ElevatedButton.styleFrom(
-                  primary: cPrimaryLightColor,
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(12.0),
-                  ),
+          child: SizedBox(
+            height: 50.0,
+            child: ElevatedButton(
+              onPressed: () {},
+              style: ElevatedButton.styleFrom(
+                primary: cPrimaryLightColor,
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(12.0),
                 ),
-                child: Text("Aplicar al trabajo", style: kTitleStyle),
               ),
+              child: Text("Aplicar al trabajo", style: kTitleStyle),
             ),
           ),
         ),
