@@ -44,6 +44,13 @@ class _$AppRouter extends RootStackRouter {
           routeData: routeData,
           child: SignUpPage(key: args.key, title: args.title));
     },
+    JobDetailPageRoute.name: (routeData) {
+      final args = routeData.argsAs<JobDetailPageRouteArgs>(
+          orElse: () => const JobDetailPageRouteArgs());
+      return AdaptivePage<dynamic>(
+          routeData: routeData,
+          child: JobDetailPage(key: args.key, offer: args.offer));
+    },
     HomePageRoute.name: (routeData) {
       final args = routeData.argsAs<HomePageRouteArgs>(
           orElse: () => const HomePageRouteArgs());
@@ -69,6 +76,12 @@ class _$AppRouter extends RootStackRouter {
     ProfilePageRoute.name: (routeData) {
       return AdaptivePage<dynamic>(
           routeData: routeData, child: const ProfilePage());
+    },
+    JobListingPageRoute.name: (routeData) {
+      final args = routeData.argsAs<JobListingPageRouteArgs>(
+          orElse: () => const JobListingPageRouteArgs());
+      return AdaptivePage<dynamic>(
+          routeData: routeData, child: JobListingPage(key: args.key));
     }
   };
 
@@ -78,6 +91,8 @@ class _$AppRouter extends RootStackRouter {
         RouteConfig(WelcomePageRoute.name, path: '/welcome'),
         RouteConfig(LoginPageRoute.name, path: '/login'),
         RouteConfig(SignUpPageRoute.name, path: '/signup'),
+        RouteConfig(JobDetailPageRoute.name,
+            path: '/job-detail-page', guards: [authGuard]),
         RouteConfig(HomePageRoute.name, path: '/home', guards: [
           authGuard
         ], children: [
@@ -90,6 +105,8 @@ class _$AppRouter extends RootStackRouter {
               path: 'settings', parent: HomePageRoute.name),
           RouteConfig(ProfilePageRoute.name,
               path: 'profile', parent: HomePageRoute.name),
+          RouteConfig(JobListingPageRoute.name,
+              path: 'jobhome', parent: HomePageRoute.name),
           RouteConfig('*#redirect',
               path: '*',
               parent: HomePageRoute.name,
@@ -176,6 +193,29 @@ class SignUpPageRouteArgs {
   }
 }
 
+/// generated route for [JobDetailPage]
+class JobDetailPageRoute extends PageRouteInfo<JobDetailPageRouteArgs> {
+  JobDetailPageRoute({Key? key, JobOffer? offer})
+      : super(name,
+            path: '/job-detail-page',
+            args: JobDetailPageRouteArgs(key: key, offer: offer));
+
+  static const String name = 'JobDetailPageRoute';
+}
+
+class JobDetailPageRouteArgs {
+  const JobDetailPageRouteArgs({this.key, this.offer});
+
+  final Key? key;
+
+  final JobOffer? offer;
+
+  @override
+  String toString() {
+    return 'JobDetailPageRouteArgs{key: $key, offer: $offer}';
+  }
+}
+
 /// generated route for [HomePage]
 class HomePageRoute extends PageRouteInfo<HomePageRouteArgs> {
   HomePageRoute({Key? key, String? title, List<PageRouteInfo>? children})
@@ -246,4 +286,23 @@ class ProfilePageRoute extends PageRouteInfo<void> {
   const ProfilePageRoute() : super(name, path: 'profile');
 
   static const String name = 'ProfilePageRoute';
+}
+
+/// generated route for [JobListingPage]
+class JobListingPageRoute extends PageRouteInfo<JobListingPageRouteArgs> {
+  JobListingPageRoute({Key? key})
+      : super(name, path: 'jobhome', args: JobListingPageRouteArgs(key: key));
+
+  static const String name = 'JobListingPageRoute';
+}
+
+class JobListingPageRouteArgs {
+  const JobListingPageRouteArgs({this.key});
+
+  final Key? key;
+
+  @override
+  String toString() {
+    return 'JobListingPageRouteArgs{key: $key}';
+  }
 }

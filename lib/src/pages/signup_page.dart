@@ -5,7 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:practicejob/app_constants.dart';
 import 'package:practicejob/src/components/text_field_container.dart';
-import 'package:practicejob/src/models/util.dart';
+import 'package:practicejob/app_utils.dart';
 import 'package:practicejob/src/services/auth_service.dart';
 import 'package:reactive_forms/reactive_forms.dart';
 

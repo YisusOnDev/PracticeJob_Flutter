@@ -19,16 +19,16 @@ class _HomePageState extends State<HomePage> {
   final _authService = AuthService();
   final tabsItems = const <BottomNavigationBarItem>[
     BottomNavigationBarItem(
-      icon: Icon(Icons.search),
-      label: 'Buscar',
+      icon: Icon(Icons.work),
+      label: 'Ofertas',
     ),
     BottomNavigationBarItem(
       icon: Icon(Icons.archive),
-      label: 'Mis ofertas',
+      label: 'Inscripciones',
     ),
     BottomNavigationBarItem(
       icon: Icon(Icons.person),
-      label: 'Mi perfil',
+      label: 'Perfil',
     ),
   ];
 
@@ -50,10 +50,10 @@ class _HomePageState extends State<HomePage> {
         elevation: 0,
         leading: const AutoBackButton(),
       ),
-      routes: const [
-        SettingsPageRoute(),
-        SettingsPageRoute(),
-        ProfilePageRoute(),
+      routes: [
+        JobListingPageRoute(),
+        const SettingsPageRoute(),
+        const ProfilePageRoute(),
       ],
       bottomNavigationBuilder: (_, tabsRouter) {
         return customBottomNavigationBar(tabsRouter);
@@ -75,7 +75,7 @@ class _HomePageState extends State<HomePage> {
   }
 
   List<Widget>? getCurrentActions(activeIndex) {
-    if (getCurrentTabIndexLabel(activeIndex) == 'Profile') {
+    if (getCurrentTabIndexLabel(activeIndex) == 'Perfil') {
       return [
         IconButton(
             icon: const Icon(Icons.logout_rounded),

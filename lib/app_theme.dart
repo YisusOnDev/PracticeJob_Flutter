@@ -13,7 +13,7 @@ class MyAppTheme {
         primaryVariant: cPrimaryColor,
         secondary: cPrimaryColor,
         secondaryVariant: cPrimaryColor,
-        background: Colors.white,
+        background: cSilver,
         surface: Colors.white,
         onBackground: Colors.black,
         onSurface: Colors.black,

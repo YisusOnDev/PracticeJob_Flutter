@@ -11,7 +11,7 @@ import 'package:practicejob/src/models/fp_family.dart';
 import 'package:practicejob/src/models/fp_grade.dart';
 import 'package:practicejob/src/models/province.dart';
 import 'package:practicejob/src/models/user.dart';
-import 'package:practicejob/src/models/util.dart';
+import 'package:practicejob/app_utils.dart';
 import 'package:practicejob/src/services/auth_service.dart';
 import 'package:practicejob/src/services/fp_service.dart';
 import 'package:practicejob/src/services/province_service.dart';

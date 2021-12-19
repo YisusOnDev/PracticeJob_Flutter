@@ -3,7 +3,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:practicejob/src/components/profile_image.dart';
 import 'package:practicejob/src/models/user.dart';
-import 'package:practicejob/src/models/util.dart';
+import 'package:practicejob/app_utils.dart';
 import 'package:practicejob/src/routes/app_routes.dart';
 import 'package:practicejob/src/services/auth_service.dart';
 
