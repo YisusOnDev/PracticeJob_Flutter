@@ -142,6 +142,7 @@ class _LoginPageState extends State<LoginPage> {
   }
 
   doLogin() async {
+    Util.noInteractLoading();
     String _email = loginForm.control('email').value;
     String _password = loginForm.control('password').value;
     try {
@@ -157,11 +158,13 @@ class _LoginPageState extends State<LoginPage> {
           context.router.replaceNamed('/home');
         }
       } else {
-        Util.showMyDialog(context, "Error", "Credenciales inválidas.");
+        Util.showNotification("Credenciales inválidas.", "error");
       }
     } on TimeoutException catch (_) {
-      Util.showMyDialog(context, "Error",
-          "Ha ocurrido un error, por favor, intentelo más tarde.");
+      Util.showNotification(
+          "Ha ocurrido un error, por favor, intentelo más tarde.", "error");
+    } finally {
+      Util.dismissLoading();
     }
   }
 }

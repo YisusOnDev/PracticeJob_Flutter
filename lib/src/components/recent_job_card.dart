@@ -21,7 +21,7 @@ class RecentJobCard extends StatelessWidget {
           decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(12.0),
             image: const DecorationImage(
-              image: AssetImage("assets/default_companyu_logo.png"),
+              image: AssetImage(defaultCompanyLogo),
               fit: BoxFit.cover,
             ),
           ),

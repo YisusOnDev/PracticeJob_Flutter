@@ -99,7 +99,7 @@ class AuthService {
                     "Bearer " + await getCurrentToken(),
               },
               body: jsonEncode(u.toJson()))
-          .timeout(const Duration(seconds: 15));
+          .timeout(const Duration(seconds: 5));
 
       if (res.statusCode == 200) {
         await saveDataToStorage(res.body);

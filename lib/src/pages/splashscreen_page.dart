@@ -1,5 +1,8 @@
+import 'dart:async';
+
 import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
+import 'package:practicejob/app_constants.dart';
 import 'package:practicejob/src/services/auth_service.dart';
 
 final AuthService _authService = AuthService();
@@ -16,13 +19,18 @@ class SplashScreen extends StatelessWidget {
         if (snapshot.hasData) {
           context.router.replaceNamed(snapshot.data);
         }
-        return const CircularProgressIndicator();
+        return uFullSpinner;
       },
     );
   }
 }
 
 Future<String> routeToGo() async {
-  String authenticated = await _authService.getFirstPageRoute();
+  String authenticated = "/welcome";
+  try {
+    authenticated = await _authService.getFirstPageRoute();
+  } on TimeoutException catch (_) {
+    return authenticated;
+  }
   return authenticated;
 }

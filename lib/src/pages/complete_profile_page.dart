@@ -66,7 +66,10 @@ class _CompleteProfilePageState extends State<CompleteProfilePage> {
   @override
   initState() {
     super.initState();
-    _fillForm(widget.userData);
+    // If we are comming from profile page then we need to fill all profile data
+    if (widget.userData != null) {
+      _fillForm(widget.userData);
+    }
   }
 
   @override
@@ -106,8 +109,8 @@ class _CompleteProfilePageState extends State<CompleteProfilePage> {
                       _imagePath = image.path;
                     });
                   } else {
-                    Util.showMyDialog(
-                        context, "Error", "Por favor, selecciona una imagen");
+                    Util.showNotification(
+                        "Por favor, selecciona una imagen", "info");
                   }
                 },
               ),
@@ -204,7 +207,7 @@ class _CompleteProfilePageState extends State<CompleteProfilePage> {
                           items: getProvinceList(snapshot.data),
                         ));
                       } else {
-                        return const CircularProgressIndicator();
+                        return uFullSpinner;
                       }
                     },
                   ),
@@ -301,8 +304,8 @@ class _CompleteProfilePageState extends State<CompleteProfilePage> {
             ),
           );
         } else {
-          //return const CircularProgressIndicator();
-          return Util.showLoadingDialog();
+          //return Util.noInteractLoading();
+          return uFullSpinner;
         }
       },
     );
@@ -423,22 +426,24 @@ class _CompleteProfilePageState extends State<CompleteProfilePage> {
             context.router.removeLast();
             context.router.replaceNamed('/home');
           } else {
-            Util.showMyDialog(context, "Error",
-                "Tu perfil no se ha podido guardar correctamente, si el error persiste contacte con un Administrador.");
+            Util.showNotification(
+                "Tu perfil no se ha podido guardar correctamente, si el error persiste contacte con un Administrador.",
+                "error");
           }
         } on TimeoutException catch (_) {
-          Util.showMyDialog(context, "Error",
-              "Ha ocurrido un error, por favor, intentelo de nuevo más tarde.");
+          Util.showNotification(
+              "Ha ocurrido un error, por favor, intentelo de nuevo más tarde.",
+              "error");
         }
       } else {
-        Util.showMyDialog(context, "Error", "Tu sesión ha expirado.");
+        Util.showNotification("Tu sesión ha expirado.", "info");
         context.router.replaceNamed('/');
       }
       Util.rebuildAllChildren(context);
     } else {
       profileForm.markAllAsTouched();
-      Util.showMyDialog(
-          context, "Error", "Por favor rellena todos los campos requeridos.");
+      Util.showNotification(
+          "Por favor rellena todos los campos requeridos.", "error");
     }
   }
 }

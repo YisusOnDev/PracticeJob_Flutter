@@ -134,7 +134,7 @@ class _JobListingPageState extends State<JobListingPage> {
                       },
                     );
                   }
-                  return const CircularProgressIndicator();
+                  return uSpinner;
                 },
               ),
               const SizedBox(height: 15.0),

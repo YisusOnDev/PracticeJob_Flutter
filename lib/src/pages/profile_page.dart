@@ -1,6 +1,7 @@
 import 'package:auto_route/auto_route.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:practicejob/app_constants.dart';
 import 'package:practicejob/src/components/profile_image.dart';
 import 'package:practicejob/src/models/user.dart';
 import 'package:practicejob/app_utils.dart';
@@ -51,7 +52,7 @@ class _ProfilePageState extends State<ProfilePage> {
             ),
           );
         } else {
-          return const CircularProgressIndicator();
+          return uFullSpinner;
         }
       },
     );

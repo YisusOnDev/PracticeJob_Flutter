@@ -178,12 +178,13 @@ class _SignUpPageState extends State<SignUpPage> {
         context.router.removeLast();
         context.router.replaceNamed('/completeprofile');
       } else {
-        Util.showMyDialog(context, "Error",
-            "Ya existe una cuenta con este correo electrónico.");
+        Util.showNotification(
+            "Ya existe una cuenta con este correo electrónico.", "info");
       }
     } on TimeoutException catch (_) {
-      Util.showMyDialog(context, "Error",
-          "Ha ocurrido un error, por favor, intentelo de nuevo más tarde.");
+      Util.showNotification(
+          "Ha ocurrido un error, por favor, intentelo de nuevo más tarde.",
+          "error");
     }
   }
 }
