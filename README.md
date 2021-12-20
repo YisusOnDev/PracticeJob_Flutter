@@ -1,6 +1,6 @@
 <h1 align="center">Welcome to PracticeJob Mobile App 👋</h1>
 <p>
-  <img alt="Version" src="https://img.shields.io/badge/version-0.0.1-blue.svg?cacheSeconds=2592000" />
+  <img alt="Version" src="https://img.shields.io/badge/version-0.0.2-blue.svg?cacheSeconds=2592000" />
   <img src="https://img.shields.io/badge/Flutter-2.2.3-blue.svg" />
   <img alt="Maintenance" src="https://img.shields.io/badge/Maintained%3F-yes-green.svg" />
   <a href="https://twitter.com/YisusTM\_01" target="_blank">
