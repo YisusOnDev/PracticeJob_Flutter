@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 const apiBaseUrl = "http://10.0.2.2:5000";
@@ -24,3 +25,16 @@ var kSubtitleStyle = GoogleFonts.nunito(
   fontSize: 14.0,
   color: cDarkColor,
 );
+
+var uSpinner = const SpinKitThreeBounce(
+  color: cPrimaryColor,
+  size: 50,
+);
+
+var uFullSpinner = const SpinKitSpinningLines(
+  color: cPrimaryColor,
+  size: 75.0,
+);
+
+const defaultCompanyLogo = "assets/defaults/default_companyu_logo.png";
+const defaultUserAvatar = "assets/defaults/default_user_avatar.png";

@@ -1,44 +1,37 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:practicejob/app_constants.dart';
 import 'package:reactive_forms/reactive_forms.dart';
 
 class Util {
-  static Future<void> showMyDialog(context, title, text) async {
-    return showDialog<void>(
-      context: context,
-      barrierDismissible: false, // user must tap button!
-      builder: (BuildContext context) {
-        return AlertDialog(
-          title: Text(title),
-          content: SingleChildScrollView(
-            child: ListBody(
-              children: <Widget>[Text(text)],
-            ),
-          ),
-          actions: <Widget>[
-            TextButton(
-              child: const Text('Cerrar',
-                  style: TextStyle(color: cPrimaryColor, fontSize: 18)),
-              onPressed: () {
-                Navigator.of(context).pop();
-              },
-            ),
-          ],
-        );
-      },
-    );
+  static showNotification(String msg, String? type) {
+    if (type == null) {
+      EasyLoading.showInfo(msg);
+    } else {
+      switch (type) {
+        case "ok":
+          EasyLoading.showSuccess(msg);
+          break;
+        case "error":
+          EasyLoading.showError(msg);
+          break;
+        case "info":
+          EasyLoading.showInfo(msg);
+          break;
+        default:
+          EasyLoading.showInfo(msg);
+          break;
+      }
+    }
   }
 
-  static showLoadingDialog() {
-    return SizedBox(
-      child: AlertDialog(
-        content: SingleChildScrollView(
-          child: ListBody(
-            children: const <Widget>[CircularProgressIndicator()],
-          ),
-        ),
-      ),
-    );
+  static noInteractLoading() {
+    EasyLoading.instance.userInteractions = false;
+    EasyLoading.show();
+  }
+
+  static dismissLoading() {
+    EasyLoading.dismiss();
   }
 
   static ValidatorFunction mustMatchValidator(

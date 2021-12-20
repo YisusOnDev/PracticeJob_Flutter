@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:practicejob/app_theme.dart';
 import 'package:practicejob/src/routes/app_routes.dart';
 
@@ -19,6 +20,7 @@ class MyApp extends StatelessWidget {
       routeInformationParser: _appRouter.defaultRouteParser(),
       debugShowCheckedModeBanner: false,
       title: 'PracticeJob App',
+      builder: EasyLoading.init(),
       theme: ThemeData(
           colorScheme: appTheme.colorScheme,
           fontFamily: 'Nunito',
