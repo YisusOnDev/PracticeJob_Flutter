@@ -1,5 +1,7 @@
 import 'dart:convert';
 
+import 'package:practicejob/src/models/jobapplication.dart';
+
 import 'company.dart';
 
 import 'package:json_annotation/json_annotation.dart';
@@ -20,6 +22,7 @@ class JobOffer {
   final DateTime? startDate;
   final DateTime? endDate;
   final List<FP>? fPs;
+  final List<JobApplication>? jobApplications;
 
   JobOffer({
     this.id,
@@ -32,6 +35,7 @@ class JobOffer {
     this.startDate,
     this.endDate,
     this.fPs,
+    this.jobApplications,
   });
 
   factory JobOffer.fromJson(Map<String, dynamic> json) =>

@@ -396,6 +396,7 @@ class _CompleteProfilePageState extends State<CompleteProfilePage> {
     return false;
   }
 
+  /// Method that retrieve all fields data and tries to update user profile data
   doTrySaveProfile() async {
     if (profileForm.valid) {
       User? user = await _authService.readFromStorage();

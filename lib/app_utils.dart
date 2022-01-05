@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:practicejob/app_constants.dart';
+import 'package:practicejob/src/models/jobapplication.dart';
 import 'package:reactive_forms/reactive_forms.dart';
 
 class Util {
@@ -91,5 +92,26 @@ class Util {
     }
 
     (context as Element).visitChildren(rebuild);
+  }
+
+  static String getApplicationStatus(
+      List<JobApplication> applications, int appId) {
+    ApplicationStatus status = ApplicationStatus.pending;
+    for (JobApplication app in applications) {
+      if (app.id == appId) {
+        status = app.applicationStatus;
+      }
+    }
+
+    switch (status) {
+      case ApplicationStatus.pending:
+        return "Pendiente";
+      case ApplicationStatus.accepted:
+        return "Aceptadada";
+      case ApplicationStatus.declined:
+        return "Declinada";
+      default:
+        return "Pendiente";
+    }
   }
 }

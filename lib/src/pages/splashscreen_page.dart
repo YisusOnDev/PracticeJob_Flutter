@@ -25,6 +25,7 @@ class SplashScreen extends StatelessWidget {
   }
 }
 
+/// Method that get the first route to go (User opens freshly app)
 Future<String> routeToGo() async {
   String authenticated = "/welcome";
   try {

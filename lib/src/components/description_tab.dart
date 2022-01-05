@@ -35,10 +35,12 @@ class DescriptionTab extends StatelessWidget {
     );
   }
 
+  /// Method that returns formatted offer company description
   String getCompanyDescription(Company c) {
     return "Nombre: ${c.name}\nDirección: ${c.address} - ${c.province!.name}\n\nNo hay información adicional.";
   }
 
+  /// Method that returns formatted offer description text
   String getOfferDescription(JobOffer j) {
     String start = DateFormat('dd-MM-yyyy').format(j.startDate!);
     String end = DateFormat('dd-MM-yyyy').format(j.endDate!);

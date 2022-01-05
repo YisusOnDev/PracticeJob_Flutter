@@ -31,6 +31,7 @@ class ProfileWidget extends StatelessWidget {
     );
   }
 
+  /// Widget that generate profile image (128x128)
   Widget buildImage() {
     final image = NetworkImage(imagePath);
 
@@ -48,6 +49,7 @@ class ProfileWidget extends StatelessWidget {
     );
   }
 
+  /// Widget that add a circle edit icon with pencil svg
   Widget buildEditIcon(Color color) => buildCircle(
         color: Colors.white,
         all: 3,
@@ -62,6 +64,7 @@ class ProfileWidget extends StatelessWidget {
         ),
       );
 
+  // Widget that generates a circle and put a child into it (image)
   Widget buildCircle({
     required Widget child,
     required double all,

@@ -69,19 +69,17 @@ class _$AppRouter extends RootStackRouter {
               userData: args.userData,
               fromSettings: args.fromSettings));
     },
-    SettingsPageRoute.name: (routeData) {
+    JobListingPageRoute.name: (routeData) {
       return AdaptivePage<dynamic>(
-          routeData: routeData, child: const SettingsPage());
+          routeData: routeData, child: const JobListingPage());
+    },
+    JobApplicationPageRoute.name: (routeData) {
+      return AdaptivePage<dynamic>(
+          routeData: routeData, child: const JobApplicationPage());
     },
     ProfilePageRoute.name: (routeData) {
       return AdaptivePage<dynamic>(
           routeData: routeData, child: const ProfilePage());
-    },
-    JobListingPageRoute.name: (routeData) {
-      final args = routeData.argsAs<JobListingPageRouteArgs>(
-          orElse: () => const JobListingPageRouteArgs());
-      return AdaptivePage<dynamic>(
-          routeData: routeData, child: JobListingPage(key: args.key));
     }
   };
 
@@ -99,14 +97,14 @@ class _$AppRouter extends RootStackRouter {
           RouteConfig('#redirect',
               path: '',
               parent: HomePageRoute.name,
-              redirectTo: 'settings',
+              redirectTo: 'jobmy',
               fullMatch: true),
-          RouteConfig(SettingsPageRoute.name,
-              path: 'settings', parent: HomePageRoute.name),
-          RouteConfig(ProfilePageRoute.name,
-              path: 'profile', parent: HomePageRoute.name),
           RouteConfig(JobListingPageRoute.name,
               path: 'jobhome', parent: HomePageRoute.name),
+          RouteConfig(JobApplicationPageRoute.name,
+              path: 'jobmy', parent: HomePageRoute.name),
+          RouteConfig(ProfilePageRoute.name,
+              path: 'profile', parent: HomePageRoute.name),
           RouteConfig('*#redirect',
               path: '*',
               parent: HomePageRoute.name,
@@ -274,11 +272,18 @@ class CompleteProfilePageRouteArgs {
   }
 }
 
-/// generated route for [SettingsPage]
-class SettingsPageRoute extends PageRouteInfo<void> {
-  const SettingsPageRoute() : super(name, path: 'settings');
+/// generated route for [JobListingPage]
+class JobListingPageRoute extends PageRouteInfo<void> {
+  const JobListingPageRoute() : super(name, path: 'jobhome');
 
-  static const String name = 'SettingsPageRoute';
+  static const String name = 'JobListingPageRoute';
+}
+
+/// generated route for [JobApplicationPage]
+class JobApplicationPageRoute extends PageRouteInfo<void> {
+  const JobApplicationPageRoute() : super(name, path: 'jobmy');
+
+  static const String name = 'JobApplicationPageRoute';
 }
 
 /// generated route for [ProfilePage]
@@ -286,23 +291,4 @@ class ProfilePageRoute extends PageRouteInfo<void> {
   const ProfilePageRoute() : super(name, path: 'profile');
 
   static const String name = 'ProfilePageRoute';
-}
-
-/// generated route for [JobListingPage]
-class JobListingPageRoute extends PageRouteInfo<JobListingPageRouteArgs> {
-  JobListingPageRoute({Key? key})
-      : super(name, path: 'jobhome', args: JobListingPageRouteArgs(key: key));
-
-  static const String name = 'JobListingPageRoute';
-}
-
-class JobListingPageRouteArgs {
-  const JobListingPageRouteArgs({this.key});
-
-  final Key? key;
-
-  @override
-  String toString() {
-    return 'JobListingPageRouteArgs{key: $key}';
-  }
 }

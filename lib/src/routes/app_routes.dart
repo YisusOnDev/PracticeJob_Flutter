@@ -5,11 +5,11 @@ import 'package:practicejob/src/models/joboffer.dart';
 import 'package:practicejob/src/models/user.dart';
 import 'package:practicejob/src/pages/complete_profile_page.dart';
 import 'package:practicejob/src/pages/home_page.dart';
+import 'package:practicejob/src/pages/jobapplication_page.dart';
 import 'package:practicejob/src/pages/jobdetail_page.dart';
 import 'package:practicejob/src/pages/joblisting_page.dart';
 import 'package:practicejob/src/pages/login_page.dart';
 import 'package:practicejob/src/pages/profile_page.dart';
-import 'package:practicejob/src/pages/settings_page.dart';
 import 'package:practicejob/src/pages/signup_page.dart';
 import 'package:practicejob/src/pages/splashscreen_page.dart';
 import 'package:practicejob/src/pages/welcome_page.dart';
@@ -26,10 +26,10 @@ part 'app_routes.gr.dart';
     AutoRoute(page: JobDetailPage, guards: [AuthGuard]),
 
     AutoRoute(path: '/home', page: HomePage, children: [
-      RedirectRoute(path: '', redirectTo: 'settings'),
-      AutoRoute(path: 'settings', page: SettingsPage),
-      AutoRoute(path: 'profile', page: ProfilePage),
+      RedirectRoute(path: '', redirectTo: 'jobmy'),
       AutoRoute(path: 'jobhome', page: JobListingPage),
+      AutoRoute(path: 'jobmy', page: JobApplicationPage),
+      AutoRoute(path: 'profile', page: ProfilePage),
       RedirectRoute(path: '*', redirectTo: ''),
     ], guards: [
       AuthGuard

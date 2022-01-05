@@ -50,10 +50,10 @@ class _HomePageState extends State<HomePage> {
         elevation: 0,
         leading: const AutoBackButton(),
       ),
-      routes: [
+      routes: const [
         JobListingPageRoute(),
-        const SettingsPageRoute(),
-        const ProfilePageRoute(),
+        JobApplicationPageRoute(),
+        ProfilePageRoute(),
       ],
       bottomNavigationBuilder: (_, tabsRouter) {
         return customBottomNavigationBar(tabsRouter);
@@ -74,6 +74,7 @@ class _HomePageState extends State<HomePage> {
     return tabsItems[activeIndex].label;
   }
 
+  /// Method that returns appbar icons if current page has
   List<Widget>? getCurrentActions(activeIndex) {
     if (getCurrentTabIndexLabel(activeIndex) == 'Perfil') {
       return [

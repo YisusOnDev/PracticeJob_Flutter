@@ -1,36 +1,30 @@
 import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
 import 'package:practicejob/app_constants.dart';
-import 'package:practicejob/src/components/promoted_card.dart';
-import 'package:practicejob/src/components/recent_job_card.dart';
+import 'package:practicejob/src/components/application_job_card.dart';
+import 'package:practicejob/src/models/jobapplication.dart';
 import 'package:practicejob/src/models/joboffer.dart';
+import 'package:practicejob/src/models/user.dart';
 import 'package:practicejob/src/routes/app_routes.dart';
+import 'package:practicejob/src/services/auth_service.dart';
 import 'package:practicejob/src/services/joboffer_service.dart';
 
-class JobListingPage extends StatefulWidget {
-  const JobListingPage({Key? key}) : super(key: key);
+class JobApplicationPage extends StatefulWidget {
+  const JobApplicationPage({Key? key}) : super(key: key);
 
   @override
-  State<JobListingPage> createState() => _JobListingPageState();
+  State<JobApplicationPage> createState() => _JobApplicationPagePageState();
 }
 
-class _JobListingPageState extends State<JobListingPage> {
+class _JobApplicationPagePageState extends State<JobApplicationPage> {
   final keyRefresh = GlobalKey<RefreshIndicatorState>();
-  final jobOfferService = JobOfferService();
+  final _authService = AuthService();
+  final _jobOfferService = JobOfferService();
   final searchController = TextEditingController();
-  List<JobOffer> recentList = [];
-  List<JobOffer> filteredRecentList = [];
 
-  Future<void> getRecentList() async {
-    List<JobOffer> retrievedList =
-        await jobOfferService.getAllAvailableFromFp();
-    recentList.clear();
-    setState(() {
-      for (JobOffer offer in retrievedList) {
-        recentList.add(offer);
-      }
-    });
-  }
+  List<JobOffer> jobApplicationsList = [];
+  List<JobOffer> filteredApplicationsList = [];
+  User? student;
 
   @override
   void initState() {
@@ -58,33 +52,7 @@ class _JobListingPageState extends State<JobListingPage> {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: <Widget>[
-                const SizedBox(height: 10.0),
-                Text(
-                  "OFERTAS POPULARES",
-                  style: kTitleStyle,
-                ),
                 const SizedBox(height: 15.0),
-                SizedBox(
-                  width: double.infinity,
-                  height: 190.0,
-                  child: ListView.builder(
-                    itemCount: recentList.length,
-                    scrollDirection: Axis.horizontal,
-                    shrinkWrap: true,
-                    physics: const BouncingScrollPhysics(),
-                    itemBuilder: (context, index) {
-                      var offer = recentList[index];
-                      return InkWell(
-                          onTap: () {
-                            getRecentList();
-                            context.router
-                                .push(JobDetailPageRoute(offer: offer));
-                          },
-                          child: PromotedCard(offer: offer));
-                    },
-                  ),
-                ),
-                const SizedBox(height: 25.0),
                 Container(
                   width: double.infinity,
                   height: 50.0,
@@ -133,12 +101,7 @@ class _JobListingPageState extends State<JobListingPage> {
                     ],
                   ),
                 ),
-                const SizedBox(height: 25.0),
-                Text(
-                  "OFERTAS RECIENTES",
-                  style: kTitleStyle,
-                ),
-                recentListWidget(),
+                jobApplicationsListWidget(),
                 const SizedBox(height: 15.0),
               ],
             ),
@@ -148,42 +111,68 @@ class _JobListingPageState extends State<JobListingPage> {
     );
   }
 
-  /// Widget that builds Job Offers ListView
-  Widget recentListWidget() {
-    if (filteredRecentList.isNotEmpty || searchController.text.isNotEmpty) {
+  /// Widget that builds Job Application ListView
+  Widget jobApplicationsListWidget() {
+    if (filteredApplicationsList.isNotEmpty ||
+        searchController.text.isNotEmpty) {
       return ListView.builder(
-        itemCount: filteredRecentList.length,
+        itemCount: filteredApplicationsList.length,
         scrollDirection: Axis.vertical,
         shrinkWrap: true,
         physics: const ScrollPhysics(),
         itemBuilder: (context, index) {
-          var recent = filteredRecentList[index];
+          var recent = filteredApplicationsList[index];
           return InkWell(
             onTap: () {
               getRecentList();
               context.router.push(JobDetailPageRoute(offer: recent));
             },
-            child: RecentJobCard(offer: recent),
+            child: ApplicationJobCard(
+              offer: recent,
+              student: student,
+            ),
           );
         },
       );
     } else {
       return ListView.builder(
-        itemCount: recentList.length,
+        itemCount: jobApplicationsList.length,
         scrollDirection: Axis.vertical,
         shrinkWrap: true,
         physics: const ScrollPhysics(),
         itemBuilder: (context, index) {
-          var recent = recentList[index];
+          var recent = jobApplicationsList[index];
           return InkWell(
             onTap: () {
               getRecentList();
               context.router.push(JobDetailPageRoute(offer: recent));
             },
-            child: RecentJobCard(offer: recent),
+            child: ApplicationJobCard(
+              offer: recent,
+              student: student,
+            ),
           );
         },
       );
+    }
+  }
+
+  /// Method that retrieves and fill job applications list
+  Future<void> getRecentList() async {
+    jobApplicationsList.clear();
+    student = await _authService.readFromStorage();
+    if (student != null) {
+      List<JobOffer> retrievedList = await _jobOfferService.getAll();
+
+      setState(() {
+        for (JobOffer offer in retrievedList) {
+          for (JobApplication app in offer.jobApplications!) {
+            if (app.studentId == student!.id) {
+              jobApplicationsList.add(offer);
+            }
+          }
+        }
+      });
     }
   }
 
@@ -192,15 +181,15 @@ class _JobListingPageState extends State<JobListingPage> {
   void doSearch() {
     String search = searchController.text;
 
-    filteredRecentList.clear();
+    filteredApplicationsList.clear();
     if (search.isEmpty) {
       setState(() {});
       return;
     }
 
-    for (JobOffer offer in recentList) {
+    for (JobOffer offer in jobApplicationsList) {
       if (offer.name!.toLowerCase().contains(search.toLowerCase())) {
-        filteredRecentList.add(offer);
+        filteredApplicationsList.add(offer);
       }
     }
 

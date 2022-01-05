@@ -25,6 +25,9 @@ JobOffer _$JobOfferFromJson(Map<String, dynamic> json) => JobOffer(
       fPs: (json['fPs'] as List<dynamic>?)
           ?.map((e) => FP.fromJson(e as Map<String, dynamic>))
           .toList(),
+      jobApplications: (json['jobApplications'] as List<dynamic>?)
+          ?.map((e) => JobApplication.fromJson(e as Map<String, dynamic>))
+          .toList(),
     );
 
 Map<String, dynamic> _$JobOfferToJson(JobOffer instance) => <String, dynamic>{
@@ -38,4 +41,5 @@ Map<String, dynamic> _$JobOfferToJson(JobOffer instance) => <String, dynamic>{
       'startDate': instance.startDate?.toIso8601String(),
       'endDate': instance.endDate?.toIso8601String(),
       'fPs': instance.fPs,
+      'jobApplications': instance.jobApplications,
     };

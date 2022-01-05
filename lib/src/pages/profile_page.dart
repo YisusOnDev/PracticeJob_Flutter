@@ -71,6 +71,7 @@ class _ProfilePageState extends State<ProfilePage> {
           )
         ],
       );
+
   Widget buildAbout(User user) => Container(
         padding: const EdgeInsets.symmetric(horizontal: 48),
         child: Column(
