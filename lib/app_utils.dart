@@ -107,7 +107,7 @@ class Util {
       case ApplicationStatus.pending:
         return "Pendiente";
       case ApplicationStatus.accepted:
-        return "Aceptadada";
+        return "Aceptada";
       case ApplicationStatus.declined:
         return "Declinada";
       default:
