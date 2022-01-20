@@ -399,7 +399,7 @@ class _CompleteProfilePageState extends State<CompleteProfilePage> {
   /// Method that retrieve all fields data and tries to update user profile data
   doTrySaveProfile() async {
     if (profileForm.valid) {
-      User? user = await _authService.readFromStorage();
+      User? user = await _authService.readUserFromStorage();
       if (user != null) {
         String name = profileForm.control('name').value;
         String surname = profileForm.control('surname').value;
@@ -423,7 +423,7 @@ class _CompleteProfilePageState extends State<CompleteProfilePage> {
         try {
           final res = await _studentService.update(user.toJson());
           if (res.statusCode == 200) {
-            await _authService.saveDataToStorage(res.body);
+            await _authService.saveUserToStorage(res.body);
             context.router.removeLast();
             context.router.replaceNamed('/home');
           } else {

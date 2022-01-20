@@ -148,9 +148,10 @@ class _LoginPageState extends State<LoginPage> {
     try {
       final res = await _authService.login(_email, _password);
       if (res.statusCode == 200) {
-        await _authService.saveDataToStorage(res.body);
+        await _authService.saveTokenToStorage(res.headers['authorization']);
+        await _authService.saveUserToStorage(res.body);
 
-        if (jsonDecode(res.body)['data']['name'] == null) {
+        if (jsonDecode(res.body)['name'] == null) {
           context.router.removeLast();
           context.router.replaceNamed('/completeprofile');
         } else {

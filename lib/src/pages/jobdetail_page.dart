@@ -27,7 +27,7 @@ class _JobDetailPageState extends State<JobDetailPage> {
   final JobApplicationService _jobApplicationService = JobApplicationService();
 
   Future<void> setStudentData() async {
-    currentStudent = await _authService.readFromStorage();
+    currentStudent = await _authService.readUserFromStorage();
     setState(() {});
   }
 

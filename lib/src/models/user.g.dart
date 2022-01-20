@@ -24,7 +24,7 @@ User _$UserFromJson(Map<String, dynamic> json) => User(
           ? null
           : FP.fromJson(json['fp'] as Map<String, dynamic>),
       (json['fpCalification'] as num?)?.toDouble(),
-      json['token'] as String?,
+      json['validatedEmail'] as bool?,
     );
 
 Map<String, dynamic> _$UserToJson(User instance) => <String, dynamic>{
@@ -39,5 +39,5 @@ Map<String, dynamic> _$UserToJson(User instance) => <String, dynamic>{
       'fpId': instance.fpId,
       'fp': instance.fp,
       'fpCalification': instance.fpCalification,
-      'token': instance.token,
+      'validatedEmail': instance.validatedEmail,
     };

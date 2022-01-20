@@ -32,7 +32,7 @@ class JobOfferService {
   }
 
   Future<List<JobOffer>> getAllAvailableFromFp() async {
-    User? currUser = await _authService.readFromStorage();
+    User? currUser = await _authService.readUserFromStorage();
     if (currUser != null) {
       var fpId = currUser.fpId;
       var url =

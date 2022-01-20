@@ -174,7 +174,9 @@ class _SignUpPageState extends State<SignUpPage> {
     try {
       final res = await _authService.register(_email, _password);
       if (res.statusCode == 200) {
-        await _authService.saveDataToStorage(res.body);
+        print(res.body);
+        await _authService.saveUserToStorage(res.body);
+        await _authService.saveTokenToStorage(res.headers['authorization']);
         context.router.removeLast();
         context.router.replaceNamed('/completeprofile');
       } else {

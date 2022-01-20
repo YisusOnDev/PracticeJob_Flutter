@@ -10,22 +10,16 @@ class AuthService {
   final baseUrl = apiBaseUrl;
   final storage = const FlutterSecureStorage();
 
-  saveDataToStorage(data) async {
+  saveUserToStorage(data) async {
     Map<String, dynamic> body = jsonDecode(data);
-    String? token = body['token'];
     User u;
-    if (token != null && body['data'] != null) {
-      u = User.fromJson(body['data']);
-      u.token = token;
-    } else {
-      u = User.fromJson(body);
-      u.token = await getCurrentToken();
-    }
+    u = User.fromJson(body);
+
     return await storage.write(
         key: 'currentUser', value: jsonEncode(u.toJson()));
   }
 
-  Future<User?> readFromStorage() async {
+  Future<User?> readUserFromStorage() async {
     String? storageData = await storage.read(key: 'currentUser');
     if (storageData != null) {
       final storageJson = jsonDecode(storageData);
@@ -36,18 +30,21 @@ class AuthService {
     }
   }
 
-  logout() async {
-    await storage.deleteAll();
+  saveTokenToStorage(token) async {
+    return await storage.write(key: 'currentToken', value: token);
   }
 
   Future<String> getCurrentToken() async {
-    String? storageData = await storage.read(key: 'currentUser');
+    String? storageData = await storage.read(key: 'currentToken');
     if (storageData != null) {
-      final storageJson = jsonDecode(storageData);
-      return storageJson['token'];
+      return storageData;
     } else {
       return "nodata";
     }
+  }
+
+  logout() async {
+    await storage.deleteAll();
   }
 
   Future<http.Response> login(email, password) {
@@ -88,7 +85,7 @@ class AuthService {
 
   Future<bool> isAuthorized() async {
     var url = Uri.parse('$baseUrl/api/Student/Authorized');
-    User? u = await readFromStorage();
+    User? u = await readUserFromStorage();
     if (u != null) {
       http.Response res = await http
           .post(url,
@@ -102,7 +99,7 @@ class AuthService {
           .timeout(const Duration(seconds: 5));
 
       if (res.statusCode == 200) {
-        await saveDataToStorage(res.body);
+        await saveUserToStorage(res.body);
         return true;
       }
     }
@@ -112,8 +109,9 @@ class AuthService {
   Future<String> getFirstPageRoute() async {
     bool isAuthenticated = await isAuthorized();
     if (isAuthenticated) {
-      User? user = await readFromStorage();
-      if (user != null && user.token != null) {
+      User? user = await readUserFromStorage();
+      String token = await getCurrentToken();
+      if (user != null && token != 'nodata') {
         if (user.name != null) {
           return '/home';
         } else {

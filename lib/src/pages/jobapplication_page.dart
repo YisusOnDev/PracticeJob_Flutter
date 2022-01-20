@@ -160,7 +160,7 @@ class _JobApplicationPagePageState extends State<JobApplicationPage> {
   /// Method that retrieves and fill job applications list
   Future<void> getRecentList() async {
     jobApplicationsList.clear();
-    student = await _authService.readFromStorage();
+    student = await _authService.readUserFromStorage();
     if (student != null) {
       List<JobOffer> retrievedList = await _jobOfferService.getAll();
 

@@ -18,7 +18,7 @@ class User {
       this.fpId,
       this.fp,
       this.fpCalification,
-      this.token);
+      this.validatedEmail);
 
   int? id;
   String? email;
@@ -32,7 +32,7 @@ class User {
   FP? fp;
   double? fpCalification;
 
-  String? token;
+  bool? validatedEmail;
 
   factory User.fromJson(Map<String, dynamic> json) => _$UserFromJson(json);
 

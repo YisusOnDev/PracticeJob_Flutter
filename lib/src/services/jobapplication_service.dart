@@ -11,7 +11,7 @@ class JobApplicationService {
   final AuthService _authService = AuthService();
 
   Future<String> createStudentApplication(int jobOfferId) async {
-    User? currUser = await _authService.readFromStorage();
+    User? currUser = await _authService.readUserFromStorage();
     if (currUser != null) {
       var uId = currUser.id;
       var url = Uri.parse(
