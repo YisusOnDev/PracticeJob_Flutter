@@ -23,6 +23,8 @@ class _JobDetailPageState extends State<JobDetailPage> {
   JobOffer? offer;
   User? currentStudent;
 
+  bool inActiveSubscription = false;
+
   final AuthService _authService = AuthService();
   final JobApplicationService _jobApplicationService = JobApplicationService();
 
@@ -172,7 +174,8 @@ class _JobDetailPageState extends State<JobDetailPage> {
           child: SizedBox(
             height: 50.0,
             child: ElevatedButton(
-              onPressed: () => onApplyButtonPressed(widget.offer!),
+              onPressed: () =>
+                  onApplyButtonPressed(widget.offer!, inActiveSubscription),
               style: ElevatedButton.styleFrom(
                 primary: cPrimaryLightColor,
                 shape: RoundedRectangleBorder(
@@ -188,23 +191,84 @@ class _JobDetailPageState extends State<JobDetailPage> {
   }
 
   /// Function that handle Application Apply button and send post to api
-  void onApplyButtonPressed(JobOffer offer) async {
-    try {
-      var result =
-          await _jobApplicationService.createStudentApplication(offer.id!);
-      if (result == "true") {
+  void onApplyButtonPressed(JobOffer offer, bool mustDelete) async {
+    if (mustDelete) {
+      tryDeleteJobApplication(offer);
+    } else {
+      try {
+        var result =
+            await _jobApplicationService.createStudentApplication(offer.id!);
+        if (result == "true") {
+          Util.showNotification(
+              "Has aplicado correctamente a la oferta. Tu inscripción esta pendiente por parte de la empresa.",
+              "info");
+          context.router.removeLast();
+          context.router.replaceNamed('/home');
+        }
+      } on TimeoutException catch (_) {
         Util.showNotification(
-            "Has aplicado correctamente a la oferta. Tu inscripción esta pendiente por parte de la empresa.",
-            "info");
-        context.router.removeLast();
-        context.router.replaceNamed('/home');
+            "Ha ocurrido un error, por favor, intentelo más tarde.", "error");
+      } finally {
+        Util.rebuildAllChildren(context);
       }
-    } on TimeoutException catch (_) {
-      Util.showNotification(
-          "Ha ocurrido un error, por favor, intentelo más tarde.", "error");
-    } finally {
-      Util.rebuildAllChildren(context);
     }
+  }
+
+  void tryDeleteJobApplication(JobOffer offer) {
+    Widget cancelButton = TextButton(
+      child: const Text("Cancelar"),
+      onPressed: () => Navigator.of(context).pop(),
+    );
+    Widget continueButton = TextButton(
+      child: const Text("Confirmar"),
+      onPressed: () async {
+        int appId =
+            studentAlreadyApplied(offer.jobApplications!, currentStudent!);
+        if (appId != -1) {
+          try {
+            var result =
+                await _jobApplicationService.deleteStudentApplication(appId);
+            if (result == true) {
+              Util.showNotification(
+                  "Te has dado de baja de la oferta correctamente.", "info");
+              context.router.removeLast();
+              context.router.replaceNamed('/home');
+            } else {
+              Util.showNotification(
+                  "No hemos podido darte de baja de la oferta, intentale más tarde.",
+                  "error");
+            }
+          } on TimeoutException catch (_) {
+            Util.showNotification(
+                "Ha ocurrido un error, por favor, intentelo más tarde.",
+                "error");
+          } finally {
+            Util.rebuildAllChildren(context);
+          }
+        } else {
+          Util.showNotification(
+              "Ha ocurrido un error, por favor, intentelo más tarde.", "error");
+        }
+        Navigator.of(context).pop();
+      },
+    );
+    AlertDialog alert = AlertDialog(
+      title: const Text("Cancelar suscripción"),
+      content: const Text(
+          "¿Estás seguro de que quieres desuscribirte de esta oferta?"),
+      actions: [
+        cancelButton,
+        continueButton,
+      ],
+    );
+
+    // show the dialog
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return alert;
+      },
+    );
   }
 
   /// Method that generate the formatted offer subtitle
@@ -223,9 +287,11 @@ class _JobDetailPageState extends State<JobDetailPage> {
       if (appId != -1) {
         String status =
             Util.getApplicationStatus(offer.jobApplications!, appId);
+        inActiveSubscription = true;
         return Text("Ya has aplicado ($status)", style: kTitleStyle);
       }
     }
+    inActiveSubscription = false;
     return Text("Aplicar al trabajo", style: kTitleStyle);
   }
 

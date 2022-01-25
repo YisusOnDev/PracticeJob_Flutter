@@ -1,12 +1,11 @@
 import 'dart:async';
-import 'dart:convert';
 
+import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:practicejob/app_constants.dart';
-import 'package:practicejob/src/components/text_field_container.dart';
 import 'package:practicejob/app_utils.dart';
-import 'package:auto_route/auto_route.dart';
+import 'package:practicejob/src/components/text_field_container.dart';
 import 'package:practicejob/src/services/auth_service.dart';
 import 'package:reactive_forms/reactive_forms.dart';
 
@@ -78,10 +77,22 @@ class _LoginPageState extends State<LoginPage> {
                 ),
                 SizedBox(height: size.height * 0.03),
                 buildLoginForm(),
-                TextButton(
-                    onPressed: () => context.router.pushNamed('/signup'),
-                    style: TextButton.styleFrom(primary: cPrimaryColor),
-                    child: const Text("¿No tienes cuenta aún?")),
+                Row(
+                  children: [
+                    SizedBox(width: size.height * 0.03),
+                    TextButton(
+                      onPressed: () => context.router.pushNamed('/signup'),
+                      style: TextButton.styleFrom(primary: cPrimaryColor),
+                      child: const Text("¿No tienes cuenta aún?"),
+                    ),
+                    TextButton(
+                      onPressed: () =>
+                          context.router.pushNamed('/resetpassword'),
+                      style: TextButton.styleFrom(primary: cPrimaryColor),
+                      child: const Text("¿Has olvidado tu contraseña?"),
+                    ),
+                  ],
+                )
               ],
             ),
           ),
@@ -150,14 +161,9 @@ class _LoginPageState extends State<LoginPage> {
       if (res.statusCode == 200) {
         await _authService.saveTokenToStorage(res.headers['authorization']);
         await _authService.saveUserToStorage(res.body);
-
-        if (jsonDecode(res.body)['name'] == null) {
-          context.router.removeLast();
-          context.router.replaceNamed('/completeprofile');
-        } else {
-          context.router.removeLast();
-          context.router.replaceNamed('/home');
-        }
+        var routeToGo = await _authService.getFirstPageRoute();
+        context.router.removeLast();
+        context.router.replaceNamed(routeToGo);
       } else {
         Util.showNotification("Credenciales inválidas.", "error");
       }

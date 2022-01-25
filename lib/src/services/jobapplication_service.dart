@@ -35,4 +35,24 @@ class JobApplicationService {
       throw Exception('No saved user');
     }
   }
+
+  Future<bool> deleteStudentApplication(int jobApplicationId) async {
+    var url = Uri.parse(
+        '$baseUrl/api/JobApplication?applicationId=$jobApplicationId');
+    try {
+      final response = await http.delete(url, headers: {
+        HttpHeaders.contentTypeHeader: 'application/json',
+        HttpHeaders.acceptHeader: 'application/json',
+        HttpHeaders.authorizationHeader:
+            "Bearer " + await _authService.getCurrentToken(),
+      }).timeout(const Duration(seconds: 15));
+      if (response.statusCode == 200) {
+        return response.body == 'true';
+      } else {
+        throw Exception('Request failed');
+      }
+    } on TimeoutException catch (_) {
+      throw TimeoutException('Request timeout');
+    }
+  }
 }

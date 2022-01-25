@@ -112,6 +112,9 @@ class AuthService {
       User? user = await readUserFromStorage();
       String token = await getCurrentToken();
       if (user != null && token != 'nodata') {
+        if (user.validatedEmail == false) {
+          return '/confirmemail';
+        }
         if (user.name != null) {
           return '/home';
         } else {

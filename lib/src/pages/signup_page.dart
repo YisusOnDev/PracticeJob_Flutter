@@ -24,9 +24,14 @@ class _SignUpPageState extends State<SignUpPage> {
   final AuthService _authService = AuthService();
 
   final registerForm = FormGroup({
-    'email': FormControl<String>(
-        validators: [Validators.required, Validators.email]),
-    'password': FormControl<String>(validators: [Validators.required]),
+    'email': FormControl<String>(validators: [
+      Validators.required,
+      Validators.email,
+    ]),
+    'password': FormControl<String>(validators: [
+      Validators.required,
+      Validators.minLength(8),
+    ]),
     'passwordConfirmation': FormControl<String>(),
   }, validators: [
     Validators.required,
@@ -116,6 +121,7 @@ class _SignUpPageState extends State<SignUpPage> {
               obscureText: true,
               validationMessages: (control) => {
                 'required': 'La contraseña no puede estar vacía',
+                'minLength': 'La contraseña debe de tener 8 carácteres mínimo',
               },
               decoration: const InputDecoration(
                 hintText: "Contraseña",
@@ -174,11 +180,11 @@ class _SignUpPageState extends State<SignUpPage> {
     try {
       final res = await _authService.register(_email, _password);
       if (res.statusCode == 200) {
-        print(res.body);
         await _authService.saveUserToStorage(res.body);
         await _authService.saveTokenToStorage(res.headers['authorization']);
+        var routeToGo = await _authService.getFirstPageRoute();
         context.router.removeLast();
-        context.router.replaceNamed('/completeprofile');
+        context.router.replaceNamed(routeToGo);
       } else {
         Util.showNotification(
             "Ya existe una cuenta con este correo electrónico.", "info");

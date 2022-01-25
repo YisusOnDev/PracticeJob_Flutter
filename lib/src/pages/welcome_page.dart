@@ -47,25 +47,40 @@ class WelcomePage extends StatelessWidget {
                   ),
                   SizedBox(height: size.height * 0.05),
                   ElevatedButton(
-                      onPressed: () => context.router.pushNamed('/login'),
-                      style: ElevatedButton.styleFrom(
-                        fixedSize: Size(size.width * 0.5, 25),
-                        primary: cPrimaryColor,
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(29.0),
-                        ),
+                    onPressed: () => context.router.pushNamed('/login'),
+                    style: ElevatedButton.styleFrom(
+                      fixedSize: Size(size.width * 0.5, 25),
+                      primary: cPrimaryColor,
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(29.0),
                       ),
-                      child: const Text('INICIAR SESIÓN')),
+                    ),
+                    child: const Text('INICIAR SESIÓN'),
+                  ),
                   ElevatedButton(
-                      onPressed: () => context.router.pushNamed('/signup'),
-                      style: ElevatedButton.styleFrom(
-                        fixedSize: Size(size.width * 0.5, 25),
-                        primary: cPrimaryColor,
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(29.0),
-                        ),
+                    onPressed: () => context.router.pushNamed('/signup'),
+                    style: ElevatedButton.styleFrom(
+                      fixedSize: Size(size.width * 0.5, 25),
+                      primary: cPrimaryColor,
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(29.0),
                       ),
-                      child: const Text('CREAR CUENTA')),
+                    ),
+                    child: const Text('CREAR CUENTA'),
+                  ),
+                  /*
+                  ElevatedButton(
+                    onPressed: () => context.router.pushNamed('/resetpassword'),
+                    style: ElevatedButton.styleFrom(
+                      fixedSize: Size(size.width * 0.5, 25),
+                      primary: cPrimaryColor,
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(29.0),
+                      ),
+                    ),
+                    child: const Text('test'),
+                  ),
+                  */
                 ],
               ),
             ),

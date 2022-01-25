@@ -44,6 +44,13 @@ class _$AppRouter extends RootStackRouter {
           routeData: routeData,
           child: SignUpPage(key: args.key, title: args.title));
     },
+    PasswordResetPageRoute.name: (routeData) {
+      final args = routeData.argsAs<PasswordResetPageRouteArgs>(
+          orElse: () => const PasswordResetPageRouteArgs());
+      return AdaptivePage<dynamic>(
+          routeData: routeData,
+          child: PasswordResetPage(key: args.key, title: args.title));
+    },
     JobDetailPageRoute.name: (routeData) {
       final args = routeData.argsAs<JobDetailPageRouteArgs>(
           orElse: () => const JobDetailPageRouteArgs());
@@ -69,6 +76,13 @@ class _$AppRouter extends RootStackRouter {
               userData: args.userData,
               fromSettings: args.fromSettings));
     },
+    ConfirmEmailPageRoute.name: (routeData) {
+      final args = routeData.argsAs<ConfirmEmailPageRouteArgs>(
+          orElse: () => const ConfirmEmailPageRouteArgs());
+      return AdaptivePage<dynamic>(
+          routeData: routeData,
+          child: ConfirmEmailPage(key: args.key, title: args.title));
+    },
     JobListingPageRoute.name: (routeData) {
       return AdaptivePage<dynamic>(
           routeData: routeData, child: const JobListingPage());
@@ -89,6 +103,7 @@ class _$AppRouter extends RootStackRouter {
         RouteConfig(WelcomePageRoute.name, path: '/welcome'),
         RouteConfig(LoginPageRoute.name, path: '/login'),
         RouteConfig(SignUpPageRoute.name, path: '/signup'),
+        RouteConfig(PasswordResetPageRoute.name, path: '/resetpassword'),
         RouteConfig(JobDetailPageRoute.name,
             path: '/job-detail-page', guards: [authGuard]),
         RouteConfig(HomePageRoute.name, path: '/home', guards: [
@@ -113,6 +128,8 @@ class _$AppRouter extends RootStackRouter {
         ]),
         RouteConfig(CompleteProfilePageRoute.name,
             path: '/completeprofile', guards: [authGuard]),
+        RouteConfig(ConfirmEmailPageRoute.name,
+            path: '/confirmemail', guards: [authGuard]),
         RouteConfig('*#redirect', path: '*', redirectTo: '/', fullMatch: true)
       ];
 }
@@ -188,6 +205,29 @@ class SignUpPageRouteArgs {
   @override
   String toString() {
     return 'SignUpPageRouteArgs{key: $key, title: $title}';
+  }
+}
+
+/// generated route for [PasswordResetPage]
+class PasswordResetPageRoute extends PageRouteInfo<PasswordResetPageRouteArgs> {
+  PasswordResetPageRoute({Key? key, String? title})
+      : super(name,
+            path: '/resetpassword',
+            args: PasswordResetPageRouteArgs(key: key, title: title));
+
+  static const String name = 'PasswordResetPageRoute';
+}
+
+class PasswordResetPageRouteArgs {
+  const PasswordResetPageRouteArgs({this.key, this.title});
+
+  final Key? key;
+
+  final String? title;
+
+  @override
+  String toString() {
+    return 'PasswordResetPageRouteArgs{key: $key, title: $title}';
   }
 }
 
@@ -269,6 +309,29 @@ class CompleteProfilePageRouteArgs {
   @override
   String toString() {
     return 'CompleteProfilePageRouteArgs{key: $key, title: $title, userData: $userData, fromSettings: $fromSettings}';
+  }
+}
+
+/// generated route for [ConfirmEmailPage]
+class ConfirmEmailPageRoute extends PageRouteInfo<ConfirmEmailPageRouteArgs> {
+  ConfirmEmailPageRoute({Key? key, String? title})
+      : super(name,
+            path: '/confirmemail',
+            args: ConfirmEmailPageRouteArgs(key: key, title: title));
+
+  static const String name = 'ConfirmEmailPageRoute';
+}
+
+class ConfirmEmailPageRouteArgs {
+  const ConfirmEmailPageRouteArgs({this.key, this.title});
+
+  final Key? key;
+
+  final String? title;
+
+  @override
+  String toString() {
+    return 'ConfirmEmailPageRouteArgs{key: $key, title: $title}';
   }
 }
 
