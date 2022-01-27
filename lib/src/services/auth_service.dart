@@ -5,10 +5,12 @@ import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:http/http.dart' as http;
 import 'package:practicejob/app_constants.dart';
 import 'package:practicejob/src/models/user.dart';
+import 'package:practicejob/src/services/http_interceptor.dart';
 
 class AuthService {
   final baseUrl = apiBaseUrl;
   final storage = const FlutterSecureStorage();
+  final authHttp = AuthHttpClient();
 
   saveUserToStorage(data) async {
     Map<String, dynamic> body = jsonDecode(data);
@@ -49,7 +51,7 @@ class AuthService {
 
   Future<http.Response> login(email, password) {
     var url = Uri.parse('$baseUrl/api/Auth/Login');
-    return http
+    return authHttp
         .post(
           url,
           headers: {
@@ -67,7 +69,7 @@ class AuthService {
 
   Future<http.Response> register(email, password) {
     var url = Uri.parse('$baseUrl/api/Auth/Create');
-    return http
+    return authHttp
         .post(
           url,
           headers: {
@@ -87,13 +89,11 @@ class AuthService {
     var url = Uri.parse('$baseUrl/api/Student/Authorized');
     User? u = await readUserFromStorage();
     if (u != null) {
-      http.Response res = await http
+      http.Response res = await authHttp
           .post(url,
               headers: {
                 HttpHeaders.contentTypeHeader: 'application/json',
                 HttpHeaders.acceptHeader: 'application/json',
-                HttpHeaders.authorizationHeader:
-                    "Bearer " + await getCurrentToken(),
               },
               body: jsonEncode(u.toJson()))
           .timeout(const Duration(seconds: 5));
