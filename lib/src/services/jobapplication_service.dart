@@ -1,14 +1,15 @@
 import 'dart:async';
 import 'dart:io';
 
-import 'package:http/http.dart' as http;
 import 'package:practicejob/app_constants.dart';
 import 'package:practicejob/src/models/user.dart';
 import 'package:practicejob/src/services/auth_service.dart';
+import 'package:practicejob/src/services/http_interceptor.dart';
 
 class JobApplicationService {
   final baseUrl = apiBaseUrl;
   final AuthService _authService = AuthService();
+  final authHttp = AuthHttpClient();
 
   Future<String> createStudentApplication(int jobOfferId) async {
     User? currUser = await _authService.readUserFromStorage();
@@ -17,11 +18,9 @@ class JobApplicationService {
       var url = Uri.parse(
           '$baseUrl/api/JobApplication?jobOfferId=$jobOfferId&studentId=$uId');
       try {
-        final response = await http.post(url, headers: {
+        final response = await authHttp.post(url, headers: {
           HttpHeaders.contentTypeHeader: 'application/json',
           HttpHeaders.acceptHeader: 'application/json',
-          HttpHeaders.authorizationHeader:
-              "Bearer " + await _authService.getCurrentToken(),
         }).timeout(const Duration(seconds: 15));
         if (response.statusCode == 200) {
           return response.body;
@@ -40,11 +39,9 @@ class JobApplicationService {
     var url = Uri.parse(
         '$baseUrl/api/JobApplication?applicationId=$jobApplicationId');
     try {
-      final response = await http.delete(url, headers: {
+      final response = await authHttp.delete(url, headers: {
         HttpHeaders.contentTypeHeader: 'application/json',
         HttpHeaders.acceptHeader: 'application/json',
-        HttpHeaders.authorizationHeader:
-            "Bearer " + await _authService.getCurrentToken(),
       }).timeout(const Duration(seconds: 15));
       if (response.statusCode == 200) {
         return response.body == 'true';
