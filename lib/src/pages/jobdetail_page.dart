@@ -82,8 +82,10 @@ class _JobDetailPageState extends State<JobDetailPage> {
                         height: 70.0,
                         decoration: BoxDecoration(
                           borderRadius: BorderRadius.circular(15.0),
-                          image: const DecorationImage(
-                            image: AssetImage(defaultCompanyLogo),
+                          image: DecorationImage(
+                            image: NetworkImage(getProfilePicture(
+                                widget.offer!.company!.profileImage!,
+                                "company")),
                             fit: BoxFit.cover,
                           ),
                         ),
@@ -214,6 +216,7 @@ class _JobDetailPageState extends State<JobDetailPage> {
     }
   }
 
+  /// Function that handle Application Aplly button and try to delete it (with confirmation prompt)
   void tryDeleteJobApplication(JobOffer offer) {
     Widget cancelButton = TextButton(
       child: const Text("Cancelar"),

@@ -55,92 +55,10 @@ class _JobListingPageState extends State<JobListingPage> {
         child: Container(
           margin: const EdgeInsets.only(left: 18.0),
           child: SingleChildScrollView(
+            physics: const AlwaysScrollableScrollPhysics(),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
-              children: <Widget>[
-                const SizedBox(height: 10.0),
-                Text(
-                  "OFERTAS POPULARES",
-                  style: kTitleStyle,
-                ),
-                const SizedBox(height: 15.0),
-                SizedBox(
-                  width: double.infinity,
-                  height: 190.0,
-                  child: ListView.builder(
-                    itemCount: recentList.length,
-                    scrollDirection: Axis.horizontal,
-                    shrinkWrap: true,
-                    physics: const BouncingScrollPhysics(),
-                    itemBuilder: (context, index) {
-                      var offer = recentList[index];
-                      return InkWell(
-                          onTap: () {
-                            getRecentList();
-                            context.router
-                                .push(JobDetailPageRoute(offer: offer));
-                          },
-                          child: PromotedCard(offer: offer));
-                    },
-                  ),
-                ),
-                const SizedBox(height: 25.0),
-                Container(
-                  width: double.infinity,
-                  height: 50.0,
-                  margin: const EdgeInsets.only(right: 18.0),
-                  child: Row(
-                    children: <Widget>[
-                      Expanded(
-                        child: Container(
-                          padding: const EdgeInsets.symmetric(horizontal: 15.0),
-                          decoration: BoxDecoration(
-                            color: Colors.white,
-                            borderRadius: BorderRadius.circular(12.0),
-                          ),
-                          child: TextField(
-                            controller: searchController,
-                            cursorColor: cDarkColor,
-                            decoration: InputDecoration(
-                              icon: const Icon(
-                                Icons.search,
-                                size: 25.0,
-                                color: cDarkColor,
-                              ),
-                              border: InputBorder.none,
-                              hintText: "Buscar",
-                              hintStyle: kSubtitleStyle.copyWith(
-                                color: Colors.black38,
-                              ),
-                            ),
-                          ),
-                        ),
-                      ),
-                      /*Container(
-                        width: 50.0,
-                        height: 50.0,
-                        margin: const EdgeInsets.only(left: 12.0),
-                        decoration: BoxDecoration(
-                          color: cPrimaryColor,
-                          borderRadius: BorderRadius.circular(12.0),
-                        ),
-                        child: const Icon(
-                          FontAwesomeIcons.slidersH,
-                          color: Colors.white,
-                          size: 20.0,
-                        ),
-                      )*/
-                    ],
-                  ),
-                ),
-                const SizedBox(height: 25.0),
-                Text(
-                  "OFERTAS RECIENTES",
-                  style: kTitleStyle,
-                ),
-                recentListWidget(),
-                const SizedBox(height: 15.0),
-              ],
+              children: drawMainContentWidget(),
             ),
           ),
         ),
@@ -155,7 +73,7 @@ class _JobListingPageState extends State<JobListingPage> {
         itemCount: filteredRecentList.length,
         scrollDirection: Axis.vertical,
         shrinkWrap: true,
-        physics: const ScrollPhysics(),
+        physics: const AlwaysScrollableScrollPhysics(),
         itemBuilder: (context, index) {
           var recent = filteredRecentList[index];
           return InkWell(
@@ -167,12 +85,12 @@ class _JobListingPageState extends State<JobListingPage> {
           );
         },
       );
-    } else {
+    } else if (recentList.isNotEmpty) {
       return ListView.builder(
         itemCount: recentList.length,
         scrollDirection: Axis.vertical,
         shrinkWrap: true,
-        physics: const ScrollPhysics(),
+        physics: const AlwaysScrollableScrollPhysics(),
         itemBuilder: (context, index) {
           var recent = recentList[index];
           return InkWell(
@@ -184,7 +102,107 @@ class _JobListingPageState extends State<JobListingPage> {
           );
         },
       );
+    } else {
+      return const Text("No hay ofertas recientes");
     }
+  }
+
+  /// Custom WidgetList to draw the specified components and handle blank list and so on...
+  drawMainContentWidget() {
+    // This need to check PROMOTED LIST not same as non promoted list...
+    if (recentList.isNotEmpty) {
+      return <Widget>[
+        const SizedBox(height: 10.0),
+        Text(
+          "OFERTAS POPULARES",
+          style: kTitleStyle,
+        ),
+        const SizedBox(height: 15.0),
+        SizedBox(
+          width: double.infinity,
+          height: 190.0,
+          child: ListView.builder(
+            itemCount: recentList.length,
+            scrollDirection: Axis.horizontal,
+            shrinkWrap: true,
+            physics: const AlwaysScrollableScrollPhysics(),
+            itemBuilder: (context, index) {
+              var offer = recentList[index];
+              return InkWell(
+                  onTap: () {
+                    getRecentList();
+                    context.router.push(JobDetailPageRoute(offer: offer));
+                  },
+                  child: PromotedCard(offer: offer));
+            },
+          ),
+        ),
+        const SizedBox(height: 25.0),
+        searchBar(),
+        const SizedBox(height: 25.0),
+        Text(
+          "OFERTAS RECIENTES",
+          style: kTitleStyle,
+        ),
+        recentListWidget(),
+        const SizedBox(height: 15.0),
+      ];
+    }
+    return <Widget>[
+      searchBar(),
+      const SizedBox(height: 25.0),
+      Text(
+        "OFERTAS RECIENTES",
+        style: kTitleStyle,
+      ),
+      recentListWidget(),
+      // Fix scroll to update
+      SizedBox(
+        height: 100.0,
+        width: MediaQuery.of(context).size.width,
+      ),
+    ];
+  }
+
+  /// Searchbar widget for recent offer list
+  Widget searchBar() {
+    if (recentList.isNotEmpty || filteredRecentList.isNotEmpty) {
+      return Container(
+        width: double.infinity,
+        height: 50.0,
+        margin: const EdgeInsets.only(right: 18.0),
+        child: Row(
+          children: <Widget>[
+            Expanded(
+              child: Container(
+                padding: const EdgeInsets.symmetric(horizontal: 15.0),
+                decoration: BoxDecoration(
+                  color: Colors.white,
+                  borderRadius: BorderRadius.circular(12.0),
+                ),
+                child: TextField(
+                  controller: searchController,
+                  cursorColor: cDarkColor,
+                  decoration: InputDecoration(
+                    icon: const Icon(
+                      Icons.search,
+                      size: 25.0,
+                      color: cDarkColor,
+                    ),
+                    border: InputBorder.none,
+                    hintText: "Buscar",
+                    hintStyle: kSubtitleStyle.copyWith(
+                      color: Colors.black38,
+                    ),
+                  ),
+                ),
+              ),
+            ),
+          ],
+        ),
+      );
+    }
+    return const SizedBox(width: 0.0);
   }
 
   /// Listenable method that filter current applications list in order to get

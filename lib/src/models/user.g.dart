@@ -19,6 +19,7 @@ User _$UserFromJson(Map<String, dynamic> json) => User(
           ? null
           : Province.fromJson(json['province'] as Map<String, dynamic>),
       json['city'] as String?,
+      json['profileImage'] as String?,
       json['fpId'] as int?,
       json['fp'] == null
           ? null
@@ -36,6 +37,7 @@ Map<String, dynamic> _$UserToJson(User instance) => <String, dynamic>{
       'provinceId': instance.provinceId,
       'province': instance.province,
       'city': instance.city,
+      'profileImage': instance.profileImage,
       'fpId': instance.fpId,
       'fp': instance.fp,
       'fpCalification': instance.fpCalification,

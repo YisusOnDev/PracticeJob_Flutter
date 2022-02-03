@@ -6,6 +6,20 @@ part 'user.g.dart';
 
 @JsonSerializable()
 class User {
+  int? id;
+  String? email;
+  String? name;
+  String? lastName;
+  DateTime? birthDate;
+  int? provinceId;
+  Province? province;
+  String? city;
+  String? profileImage;
+  int? fpId;
+  FP? fp;
+  double? fpCalification;
+  bool? validatedEmail;
+
   User(
       this.id,
       this.email,
@@ -15,24 +29,11 @@ class User {
       this.provinceId,
       this.province,
       this.city,
+      this.profileImage,
       this.fpId,
       this.fp,
       this.fpCalification,
       this.validatedEmail);
-
-  int? id;
-  String? email;
-  String? name;
-  String? lastName;
-  DateTime? birthDate;
-  int? provinceId;
-  Province? province;
-  String? city;
-  int? fpId;
-  FP? fp;
-  double? fpCalification;
-
-  bool? validatedEmail;
 
   factory User.fromJson(Map<String, dynamic> json) => _$UserFromJson(json);
 

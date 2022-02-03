@@ -8,6 +8,7 @@ part 'company.g.dart';
 class Company {
   final int? id;
   final String? email;
+  final String? profileImage;
   final String? name;
   final String? address;
   final int? provinceId;
@@ -16,6 +17,7 @@ class Company {
   Company({
     this.id,
     this.email,
+    this.profileImage,
     this.name,
     this.address,
     this.provinceId,

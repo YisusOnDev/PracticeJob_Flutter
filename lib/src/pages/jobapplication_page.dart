@@ -49,6 +49,7 @@ class _JobApplicationPagePageState extends State<JobApplicationPage> {
         child: Container(
           margin: const EdgeInsets.only(left: 18.0),
           child: SingleChildScrollView(
+            physics: const AlwaysScrollableScrollPhysics(),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: <Widget>[
@@ -84,23 +85,10 @@ class _JobApplicationPagePageState extends State<JobApplicationPage> {
                           ),
                         ),
                       ),
-                      /*Container(
-                        width: 50.0,
-                        height: 50.0,
-                        margin: const EdgeInsets.only(left: 12.0),
-                        decoration: BoxDecoration(
-                          color: cPrimaryColor,
-                          borderRadius: BorderRadius.circular(12.0),
-                        ),
-                        child: const Icon(
-                          FontAwesomeIcons.slidersH,
-                          color: Colors.white,
-                          size: 20.0,
-                        ),
-                      )*/
                     ],
                   ),
                 ),
+                const SizedBox(height: 5.0),
                 jobApplicationsListWidget(),
                 const SizedBox(height: 15.0),
               ],
@@ -134,7 +122,7 @@ class _JobApplicationPagePageState extends State<JobApplicationPage> {
           );
         },
       );
-    } else {
+    } else if (jobApplicationsList.isNotEmpty) {
       return ListView.builder(
         itemCount: jobApplicationsList.length,
         scrollDirection: Axis.vertical,
@@ -154,6 +142,8 @@ class _JobApplicationPagePageState extends State<JobApplicationPage> {
           );
         },
       );
+    } else {
+      return const Text("No has aplicado a ninguna oferta aún");
     }
   }
 

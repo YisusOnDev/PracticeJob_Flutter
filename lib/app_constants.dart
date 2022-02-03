@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -36,5 +37,9 @@ var uFullSpinner = const SpinKitSpinningLines(
   size: 75.0,
 );
 
-const defaultCompanyLogo = "assets/defaults/default_companyu_logo.png";
-const defaultUserAvatar = "assets/defaults/default_user_avatar.png";
+const serverRoot =
+    kDebugMode ? "http://10.0.2.2:5000/" : "https://prod.yisus.dev/";
+
+String getProfilePicture(String filename, String? type) {
+  return "$serverRoot/profile_images/$type/$filename";
+}

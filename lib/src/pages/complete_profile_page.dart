@@ -102,15 +102,26 @@ class _CompleteProfilePageState extends State<CompleteProfilePage> {
               ProfileWidget(
                 imagePath: _imagePath,
                 onClicked: () async {
-                  final XFile? image = await ImagePicker()
-                      .pickImage(source: ImageSource.gallery);
-                  if (image != null) {
-                    setState(() {
-                      _imagePath = image.path;
-                    });
-                  } else {
-                    Util.showNotification(
-                        "Por favor, selecciona una imagen", "info");
+                  User? u = await _authService.readUserFromStorage();
+                  if (u != null) {
+                    final XFile? image = await ImagePicker()
+                        .pickImage(source: ImageSource.gallery);
+                    if (image != null) {
+                      User? res = await _studentService.uploadImage(
+                          u.id!, await image.readAsBytes());
+                      if (res != null) {
+                        setState(() {
+                          _imagePath =
+                              getProfilePicture(res.profileImage!, "student");
+                        });
+                      } else {
+                        Util.showNotification(
+                            "No hemos podido guardar la imagen", "error");
+                      }
+                    } else {
+                      Util.showNotification(
+                          "Por favor, selecciona una imagen", "info");
+                    }
                   }
                 },
               ),
