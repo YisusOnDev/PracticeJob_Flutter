@@ -18,7 +18,7 @@ class ProfilePage extends StatefulWidget {
 class _ProfilePageState extends State<ProfilePage> {
   final AuthService _authService = AuthService();
   late User user;
-
+  String _imagePath = getProfilePicture("default.png", "student");
   bool isBusy = false;
 
   @override
@@ -29,13 +29,17 @@ class _ProfilePageState extends State<ProfilePage> {
       builder: (BuildContext context, AsyncSnapshot snapshot) {
         if (snapshot.hasData && snapshot.data != null) {
           user = snapshot.data;
+          if (user.profileImage != null) {
+            _imagePath = getProfilePicture(user.profileImage!, "student");
+          }
           return Builder(
             builder: (context) => Scaffold(
               body: ListView(
                 physics: const BouncingScrollPhysics(),
                 children: [
+                  const SizedBox(height: 24),
                   ProfileWidget(
-                    imagePath: 'https://i.imgur.com/NEYyj2d.png',
+                    imagePath: _imagePath,
                     onClicked: () {
                       if (!isBusy) {
                         context.router.push(CompleteProfilePageRoute(

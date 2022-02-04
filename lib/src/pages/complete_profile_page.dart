@@ -61,13 +61,17 @@ class _CompleteProfilePageState extends State<CompleteProfilePage> {
     )
   });
 
-  String _imagePath = "https://i.imgur.com/NEYyj2d.png";
+  String _imagePath = getProfilePicture("default.png", "student");
 
   @override
   initState() {
     super.initState();
     // If we are comming from profile page then we need to fill all profile data
     if (widget.userData != null) {
+      if (widget.userData!.profileImage != null) {
+        _imagePath =
+            getProfilePicture(widget.userData!.profileImage!, "student");
+      } else {}
       _fillForm(widget.userData);
     }
   }
@@ -107,8 +111,8 @@ class _CompleteProfilePageState extends State<CompleteProfilePage> {
                     final XFile? image = await ImagePicker()
                         .pickImage(source: ImageSource.gallery);
                     if (image != null) {
-                      User? res = await _studentService.uploadImage(
-                          u.id!, await image.readAsBytes());
+                      User? res =
+                          await _studentService.uploadImage(u.id!, image.path);
                       if (res != null) {
                         setState(() {
                           _imagePath =

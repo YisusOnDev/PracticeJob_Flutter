@@ -72,7 +72,6 @@ flutter:
       - assets/
       - data/menu.json
       - assets/images/
-      - assets/defaults/
       - assets/icons/
 
   # The following line ensures that the Material Icons font is

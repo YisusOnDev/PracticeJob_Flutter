@@ -1,13 +1,11 @@
 import 'dart:convert';
 import 'dart:io';
-import 'dart:typed_data';
 
 import 'package:http/http.dart' as http;
 import 'package:practicejob/app_constants.dart';
 import 'package:practicejob/src/models/user.dart';
 import 'package:practicejob/src/services/auth_service.dart';
 import 'package:practicejob/src/services/http_interceptor.dart';
-import 'package:http_parser/http_parser.dart';
 
 class StudentService {
   final baseUrl = apiBaseUrl;
@@ -75,24 +73,24 @@ class StudentService {
         .timeout(const Duration(seconds: 15));
   }
 
-  Future<User?> uploadImage(int userId, Uint8List image) async {
+  Future<User?> uploadImage(int userId, String imagepath) async {
     var url = Uri.parse('$baseUrl/api/Student/UploadImage?studentId=$userId');
     Map<String, String> headers = {
       "Accept": "application/json",
       "Authorization": "Bearer " + await _authService.getCurrentToken()
     };
-    var request = http.MultipartRequest("POST", url);
-    request.files.add(http.MultipartFile.fromBytes('file', image,
-        contentType: MediaType('image', 'jpeg')));
+    var request = http.MultipartRequest('POST', url);
     request.headers.addAll(headers);
-    var response = await request.send();
+    request.files.add(await http.MultipartFile.fromPath('image', imagepath));
+
     User? u;
-    if (response.statusCode == 200) {
-      response.stream.transform(utf8.decoder).listen((value) {
-        u = User.fromJson(jsonDecode(value));
+    request.send().then((result) async {
+      http.Response.fromStream(result).then((response) {
+        if (response.statusCode == 200) {
+          u = User.fromJson(jsonDecode(response.body));
+        }
+        return u;
       });
-      return u;
-    }
-    return null;
+    }).timeout(const Duration(seconds: 45));
   }
 }
