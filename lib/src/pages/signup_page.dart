@@ -177,6 +177,7 @@ class _SignUpPageState extends State<SignUpPage> {
   doRegister() async {
     String _email = registerForm.control('email').value;
     String _password = registerForm.control('password').value;
+    Util.noInteractLoading();
     try {
       final res = await _authService.register(_email, _password);
       if (res.statusCode == 200) {
@@ -193,6 +194,8 @@ class _SignUpPageState extends State<SignUpPage> {
       Util.showNotification(
           "Ha ocurrido un error, por favor, intentelo de nuevo más tarde.",
           "error");
+    } finally {
+      Util.dismissLoading();
     }
   }
 }

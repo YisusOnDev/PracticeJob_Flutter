@@ -8,12 +8,11 @@ import 'package:practicejob/src/services/auth_service.dart';
 import 'package:practicejob/src/services/http_interceptor.dart';
 
 class StudentService {
-  final baseUrl = apiBaseUrl;
   final authHttp = AuthHttpClient();
   final _authService = AuthService();
 
   Future<http.Response> resendConfirmEmail(userJson) async {
-    var url = Uri.parse('$baseUrl/api/Student/SendEmailConfirm');
+    var url = Uri.parse('$serverRoot/api/Student/SendEmailConfirm');
 
     return authHttp
         .post(url,
@@ -22,11 +21,11 @@ class StudentService {
               HttpHeaders.acceptHeader: 'application/json',
             },
             body: jsonEncode(userJson))
-        .timeout(const Duration(seconds: 15));
+        .timeout(const Duration(seconds: 30));
   }
 
   Future<http.Response> validateEmail(userJson, code) async {
-    var url = Uri.parse('$baseUrl/api/Student/ValidateEmail?code=' + code);
+    var url = Uri.parse('$serverRoot/api/Student/ValidateEmail?code=' + code);
 
     return authHttp
         .post(url,
@@ -35,21 +34,21 @@ class StudentService {
               HttpHeaders.acceptHeader: 'application/json',
             },
             body: jsonEncode(userJson))
-        .timeout(const Duration(seconds: 15));
+        .timeout(const Duration(seconds: 30));
   }
 
   Future<http.Response> sendResetPasswordMail(email) async {
     var url =
-        Uri.parse('$baseUrl/api/Student/SendPasswordReset?email=' + email);
+        Uri.parse('$serverRoot/api/Student/SendPasswordReset?email=' + email);
 
     return authHttp.post(url, headers: {
       HttpHeaders.contentTypeHeader: 'application/json',
       HttpHeaders.acceptHeader: 'application/json',
-    }).timeout(const Duration(seconds: 15));
+    }).timeout(const Duration(seconds: 30));
   }
 
   Future<http.Response> resetPassword(passwordResetJson) async {
-    var url = Uri.parse('$baseUrl/api/Student/UpdatePassword');
+    var url = Uri.parse('$serverRoot/api/Student/UpdatePassword');
 
     return authHttp
         .post(url,
@@ -58,11 +57,11 @@ class StudentService {
               HttpHeaders.acceptHeader: 'application/json'
             },
             body: jsonEncode(passwordResetJson))
-        .timeout(const Duration(seconds: 15));
+        .timeout(const Duration(seconds: 30));
   }
 
   Future<http.Response> update(userJson) async {
-    var url = Uri.parse('$baseUrl/api/Student');
+    var url = Uri.parse('$serverRoot/api/Student');
     return authHttp
         .put(url,
             headers: {
@@ -70,11 +69,12 @@ class StudentService {
               HttpHeaders.acceptHeader: 'application/json',
             },
             body: jsonEncode(userJson))
-        .timeout(const Duration(seconds: 15));
+        .timeout(const Duration(seconds: 30));
   }
 
   Future<User?> uploadImage(int userId, String imagepath) async {
-    var url = Uri.parse('$baseUrl/api/Student/UploadImage?studentId=$userId');
+    var url =
+        Uri.parse('$serverRoot/api/Student/UploadImage?studentId=$userId');
     Map<String, String> headers = {
       "Accept": "application/json",
       "Authorization": "Bearer " + await _authService.getCurrentToken()
@@ -91,6 +91,6 @@ class StudentService {
         }
         return u;
       });
-    }).timeout(const Duration(seconds: 45));
+    }).timeout(const Duration(seconds: 30));
   }
 }

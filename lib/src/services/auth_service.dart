@@ -8,7 +8,6 @@ import 'package:practicejob/src/models/user.dart';
 import 'package:practicejob/src/services/http_interceptor.dart';
 
 class AuthService {
-  final baseUrl = apiBaseUrl;
   final storage = const FlutterSecureStorage();
   final authHttp = AuthHttpClient();
 
@@ -50,7 +49,7 @@ class AuthService {
   }
 
   Future<http.Response> login(email, password) {
-    var url = Uri.parse('$baseUrl/api/Auth/Login');
+    var url = Uri.parse('$serverRoot/api/Auth/Login');
     return authHttp
         .post(
           url,
@@ -64,11 +63,11 @@ class AuthService {
             'loginType': 'Student'
           }),
         )
-        .timeout(const Duration(seconds: 15));
+        .timeout(const Duration(seconds: 30));
   }
 
   Future<http.Response> register(email, password) {
-    var url = Uri.parse('$baseUrl/api/Auth/Create');
+    var url = Uri.parse('$serverRoot/api/Auth/Create');
     return authHttp
         .post(
           url,
@@ -82,11 +81,11 @@ class AuthService {
             'loginType': 'Student'
           }),
         )
-        .timeout(const Duration(seconds: 15));
+        .timeout(const Duration(seconds: 30));
   }
 
   Future<bool> isAuthorized() async {
-    var url = Uri.parse('$baseUrl/api/Student/Authorized');
+    var url = Uri.parse('$serverRoot/api/Student/Authorized');
     User? u = await readUserFromStorage();
     if (u != null) {
       http.Response res = await authHttp
@@ -96,7 +95,7 @@ class AuthService {
                 HttpHeaders.acceptHeader: 'application/json',
               },
               body: jsonEncode(u.toJson()))
-          .timeout(const Duration(seconds: 5));
+          .timeout(const Duration(seconds: 30));
 
       if (res.statusCode == 200) {
         await saveUserToStorage(res.body);

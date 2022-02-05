@@ -7,7 +7,6 @@ import 'package:practicejob/src/services/auth_service.dart';
 import 'package:practicejob/src/services/http_interceptor.dart';
 
 class JobApplicationService {
-  final baseUrl = apiBaseUrl;
   final AuthService _authService = AuthService();
   final authHttp = AuthHttpClient();
 
@@ -16,12 +15,12 @@ class JobApplicationService {
     if (currUser != null) {
       var uId = currUser.id;
       var url = Uri.parse(
-          '$baseUrl/api/JobApplication?jobOfferId=$jobOfferId&studentId=$uId');
+          '$serverRoot/api/JobApplication?jobOfferId=$jobOfferId&studentId=$uId');
       try {
         final response = await authHttp.post(url, headers: {
           HttpHeaders.contentTypeHeader: 'application/json',
           HttpHeaders.acceptHeader: 'application/json',
-        }).timeout(const Duration(seconds: 15));
+        }).timeout(const Duration(seconds: 30));
         if (response.statusCode == 200) {
           return response.body;
         } else {
@@ -37,12 +36,12 @@ class JobApplicationService {
 
   Future<bool> deleteStudentApplication(int jobApplicationId) async {
     var url = Uri.parse(
-        '$baseUrl/api/JobApplication?applicationId=$jobApplicationId');
+        '$serverRoot/api/JobApplication?applicationId=$jobApplicationId');
     try {
       final response = await authHttp.delete(url, headers: {
         HttpHeaders.contentTypeHeader: 'application/json',
         HttpHeaders.acceptHeader: 'application/json',
-      }).timeout(const Duration(seconds: 15));
+      }).timeout(const Duration(seconds: 30));
       if (response.statusCode == 200) {
         return response.body == 'true';
       } else {

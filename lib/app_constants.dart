@@ -3,8 +3,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:google_fonts/google_fonts.dart';
 
-const apiBaseUrl = "http://10.0.2.2:5000";
-
 const cPrimaryColor = Color(0xFF6F35A5);
 const cPrimaryLightColor = Color(0xFFF1E6FF);
 const cDarkColor = Color(0xFF21202A);
@@ -38,7 +36,7 @@ var uFullSpinner = const SpinKitSpinningLines(
 );
 
 const serverRoot =
-    kDebugMode ? "http://10.0.2.2:5000/" : "https://prod.yisus.dev/";
+    kDebugMode ? "http://10.0.2.2:5000" : "https://apipracticejob.yisus.dev";
 
 String getProfilePicture(String filename, String? type) {
   return "$serverRoot/profile_images/$type/$filename";

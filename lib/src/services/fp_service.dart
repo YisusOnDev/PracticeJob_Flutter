@@ -6,17 +6,16 @@ import 'package:practicejob/src/models/fp.dart';
 import 'package:practicejob/src/services/http_interceptor.dart';
 
 class FPService {
-  final baseUrl = apiBaseUrl;
   final authHttp = AuthHttpClient();
 
   Future<List<FP>> getAll() async {
-    var url = Uri.parse('$baseUrl/api/FP/All');
+    var url = Uri.parse('$serverRoot/api/FP/All');
 
     try {
       final response = await authHttp.get(url, headers: {
         HttpHeaders.contentTypeHeader: 'application/json',
         HttpHeaders.acceptHeader: 'application/json',
-      }).timeout(const Duration(seconds: 15));
+      }).timeout(const Duration(seconds: 30));
       if (response.statusCode == 200) {
         return fpListFromJson(response.body);
       } else {
