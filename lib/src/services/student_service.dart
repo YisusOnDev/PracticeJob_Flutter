@@ -83,14 +83,14 @@ class StudentService {
     request.headers.addAll(headers);
     request.files.add(await http.MultipartFile.fromPath('image', imagepath));
 
-    User? u;
-    request.send().then((result) async {
-      http.Response.fromStream(result).then((response) {
-        if (response.statusCode == 200) {
-          u = User.fromJson(jsonDecode(response.body));
-        }
-        return u;
-      });
-    }).timeout(const Duration(seconds: 30));
+    var response = await request.send().timeout(const Duration(seconds: 30));
+    var result = await http.Response.fromStream(response);
+    if (response.statusCode == 200) {
+      await _authService.saveUserToStorage(result.body);
+      User u = User.fromJson(json.decode(result.body));
+      return u;
+    } else {
+      return null;
+    }
   }
 }

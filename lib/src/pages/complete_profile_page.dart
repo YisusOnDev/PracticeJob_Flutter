@@ -2,8 +2,10 @@ import 'dart:async';
 
 import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:practicejob/app_constants.dart';
+import 'package:practicejob/app_utils.dart';
 import 'package:practicejob/src/components/profile_image.dart';
 import 'package:practicejob/src/components/text_field_container.dart';
 import 'package:practicejob/src/models/fp.dart';
@@ -11,7 +13,6 @@ import 'package:practicejob/src/models/fp_family.dart';
 import 'package:practicejob/src/models/fp_grade.dart';
 import 'package:practicejob/src/models/province.dart';
 import 'package:practicejob/src/models/user.dart';
-import 'package:practicejob/app_utils.dart';
 import 'package:practicejob/src/services/auth_service.dart';
 import 'package:practicejob/src/services/fp_service.dart';
 import 'package:practicejob/src/services/province_service.dart';
@@ -71,7 +72,7 @@ class _CompleteProfilePageState extends State<CompleteProfilePage> {
       if (widget.userData!.profileImage != null) {
         _imagePath =
             getProfilePicture(widget.userData!.profileImage!, "student");
-      } else {}
+      }
       _fillForm(widget.userData);
     }
   }
@@ -114,10 +115,11 @@ class _CompleteProfilePageState extends State<CompleteProfilePage> {
                       User? res =
                           await _studentService.uploadImage(u.id!, image.path);
                       if (res != null) {
-                        setState(() {
-                          _imagePath =
-                              getProfilePicture(res.profileImage!, "student");
-                        });
+                        _imagePath =
+                            getProfilePicture(res.profileImage!, "student");
+                        Util.showNotification(
+                            "Foto de perfil cambiada éxitosamente", "success");
+                        setState(() {});
                       } else {
                         Util.showNotification(
                             "No hemos podido guardar la imagen", "error");

@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:flutter/material.dart';
 import 'package:practicejob/app_constants.dart';
 
@@ -16,7 +18,6 @@ class ProfileWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     const color = cPrimaryColor;
-
     return Center(
       child: Stack(
         children: [
@@ -33,8 +34,8 @@ class ProfileWidget extends StatelessWidget {
 
   /// Widget that generate profile image (128x128)
   Widget buildImage() {
-    final image = NetworkImage(imagePath);
-
+    /// retrieve networkimage and prevent caching using ?version and forcing refresh as profile_images has same name always
+    final image = NetworkImage(imagePath + "?version${Random().nextInt(9999)}");
     return ClipOval(
       child: Material(
         color: Colors.transparent,
