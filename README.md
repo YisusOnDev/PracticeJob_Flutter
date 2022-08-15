@@ -14,6 +14,9 @@
 
 - Flutter 2.2.3
 
+## What is PracticeJob?
+> "PracticeJob" is an application which allows students to search for a suitable internship placement. It also allows companies to search for students for internships based on their studies, notes. It includes features such as: premium packages for companies, messaging system, ad boost, among other things.
+
 ## Install
 
 ```sh
@@ -38,4 +41,9 @@ Usable builds (apk and so) will be available on Releases tab
 * Github: [@YisusOnDev](https://github.com/YisusOnDev)
 
 ## 📝 License
-Copyright © 2021 [Jesús Téllez (Yisus)](https://github.com/YisusOnDev).<br />
+Copyright © 2022 [Jesús Téllez (Yisus)](https://github.com/YisusOnDev).<br />
+
+## 💻 Linked Projects
+* [PracticeJob .NET Core API](https://github.com/YisusOnDev/PracticeJob_API)
+* [PracticeJob Angular WebApp](https://github.com/YisusOnDev/PracticeJob_Angular)
+* [PracticeJob Flutter MobileApp](https://github.com/YisusOnDev/PracticeJob_Flutter)
