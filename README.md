@@ -19,6 +19,7 @@
 
 ## Install
 
+Remember to first Setup Android/iOS Emulator and API. Also change values in app_constants.dart.
 ```sh
 flutter pub get
 ```
