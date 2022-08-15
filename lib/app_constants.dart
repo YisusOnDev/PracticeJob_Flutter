@@ -36,7 +36,7 @@ var uFullSpinner = const SpinKitSpinningLines(
 );
 
 const serverRoot =
-    kDebugMode ? "http://10.0.2.2:5000" : "https://apipracticejob.yisus.dev";
+    kDebugMode ? "http://10.0.2.2:5000" : "https://api.practicejob.website";
 
 String getProfilePicture(String filename, String? type) {
   return "$serverRoot/profile_images/$type/$filename";
