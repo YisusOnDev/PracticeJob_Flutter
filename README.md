@@ -30,7 +30,7 @@ flutter run
 ```
 
 ## Build
-Usable builds (apk and so) will be available on Releases tab
+You can see how to deploy Flutter projects [here](https://docs.flutter.dev/deployment/android)
 
 ## Author
 
